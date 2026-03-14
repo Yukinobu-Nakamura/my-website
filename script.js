@@ -165,6 +165,26 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   window.addEventListener('scroll', updateActiveNav, { passive: true });
 
+  /* -------- Nav label toggle EN ⇔ JA every 5s -------- */
+  const toggleLinks = document.querySelectorAll('.nav__link[data-en][data-ja]');
+  let showingJa = false;
+
+  const applyNavLabels = () => {
+    toggleLinks.forEach(link => {
+      link.style.transition = 'opacity 0.4s';
+      link.style.opacity = '0';
+      setTimeout(() => {
+        link.textContent = showingJa ? link.dataset.ja : link.dataset.en;
+        link.style.opacity = '1';
+      }, 400);
+    });
+  };
+
+  setInterval(() => {
+    showingJa = !showingJa;
+    applyNavLabels();
+  }, 5000);
+
   /* -------- Contact form (client-side only) -------- */
   const form        = document.getElementById('contactForm');
   const formMessage = document.getElementById('formMessage');
