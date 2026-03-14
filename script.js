@@ -169,6 +169,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggleLinks = document.querySelectorAll('.nav__link[data-en][data-ja]');
   let showingJa = false;
 
+  // Fix each link width to the wider of EN/JA text to prevent layout shift
+  toggleLinks.forEach(link => {
+    link.style.display = 'inline-block';
+    link.style.textAlign = 'center';
+    const orig = link.textContent;
+    link.textContent = link.dataset.en;
+    const enW = link.offsetWidth;
+    link.textContent = link.dataset.ja;
+    const jaW = link.offsetWidth;
+    link.textContent = orig;
+    link.style.minWidth = Math.max(enW, jaW) + 'px';
+  });
+
   const applyNavLabels = () => {
     toggleLinks.forEach(link => {
       link.style.transition = 'opacity 0.4s';
