@@ -166,29 +166,29 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', updateActiveNav, { passive: true });
 
   /* -------- Nav label toggle EN ⇔ JA every 5s -------- */
-  const toggleLinks = document.querySelectorAll('.nav__link[data-en][data-ja]');
+  const toggleLinks = document.querySelectorAll('.nav__link[data-en][data-ja], .logo-text[data-en][data-ja]');
   let showingJa = false;
 
-  // Fix each link width to the wider of EN/JA text to prevent layout shift
-  toggleLinks.forEach(link => {
-    link.style.display = 'inline-block';
-    link.style.textAlign = 'center';
-    const orig = link.textContent;
-    link.textContent = link.dataset.en;
-    const enW = link.offsetWidth;
-    link.textContent = link.dataset.ja;
-    const jaW = link.offsetWidth;
-    link.textContent = orig;
-    link.style.minWidth = Math.max(enW, jaW) + 'px';
+  // Fix each element width to the wider of EN/JA text to prevent layout shift
+  toggleLinks.forEach(el => {
+    el.style.display = 'inline-block';
+    el.style.textAlign = 'center';
+    const orig = el.textContent;
+    el.textContent = el.dataset.en;
+    const enW = el.offsetWidth;
+    el.textContent = el.dataset.ja;
+    const jaW = el.offsetWidth;
+    el.textContent = orig;
+    el.style.minWidth = Math.max(enW, jaW) + 'px';
   });
 
   const applyNavLabels = () => {
-    toggleLinks.forEach(link => {
-      link.style.transition = 'opacity 0.4s';
-      link.style.opacity = '0';
+    toggleLinks.forEach(el => {
+      el.style.transition = 'opacity 0.4s';
+      el.style.opacity = '0';
       setTimeout(() => {
-        link.textContent = showingJa ? link.dataset.ja : link.dataset.en;
-        link.style.opacity = '1';
+        el.textContent = showingJa ? el.dataset.ja : el.dataset.en;
+        el.style.opacity = '1';
       }, 400);
     });
   };
