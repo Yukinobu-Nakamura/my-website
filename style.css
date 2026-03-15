@@ -429,6 +429,7 @@ input, textarea, select { font-family: inherit; }
   text-orientation: mixed;
   display: flex;
   align-items: center;
+  gap: 1rem;
 }
 
 .hero__card-caption-text {
