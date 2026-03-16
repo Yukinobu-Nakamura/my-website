@@ -245,6 +245,12 @@ input, textarea, select { font-family: inherit; }
   letter-spacing: .08em;
   color: rgba(255,255,255,.75);
   position: relative;
+  border: 1.5px solid rgba(255,255,255,.35);
+  border-radius: var(--radius-full);
+  padding: .4rem 1rem;
+}
+.nav__link:hover {
+  border-color: rgba(255,255,255,.7);
 }
 .nav__link::after {
   content: '';
@@ -267,6 +273,7 @@ input, textarea, select { font-family: inherit; }
   border-radius: var(--radius-full);
   font-size: .8rem;
   box-shadow: var(--shadow-purple);
+  border-color: transparent;
 }
 .nav__link--cta::after { display: none; }
 .nav__link--cta:hover {
