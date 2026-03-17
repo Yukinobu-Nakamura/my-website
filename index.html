@@ -25,8 +25,8 @@
           <li><a href="#news"         class="nav__link" data-en="NEWS"    data-ja="最新情報">NEWS</a></li>
           <li><a href="#policy"   class="nav__link" data-en="POLICY"  data-ja="政策">POLICY</a></li>
           <li><a href="#blog"     class="nav__link" data-en="BLOG"    data-ja="ブログ">BLOG</a></li>
-          <li><a href="#contact"  class="nav__link" data-en="CONTACT" data-ja="お問い合わせ">CONTACT</a></li>
           <li><a href="#support"  class="nav__link nav__link--cta" data-en="SUPPORT" data-ja="寄付・ボランティア">SUPPORT</a></li>
+          <li><a href="#contact"  class="nav__link" data-en="CONTACT" data-ja="お問い合わせ">CONTACT</a></li>
         </ul>
       </nav>
       <button class="hamburger" id="hamburger" aria-label="メニューを開く">
@@ -346,6 +346,91 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SUPPORT ========== -->
+  <section class="support section section--alt" id="support">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-eyebrow">Support</p>
+        <h2 class="section-title">寄付・ボランティア</h2>
+        <div class="section-line"></div>
+        <p class="section-desc">活動を支えてくださる皆さまのご支援をお待ちしております。</p>
+      </div>
+      <div class="support__grid">
+
+        <!-- 寄付 -->
+        <div class="support__card">
+          <div class="support__card-header">
+            <div class="support__icon">💴</div>
+            <h3 class="support__card-title">寄付のご支援</h3>
+          </div>
+          <p class="support__card-desc">
+            皆さまからのご寄付は、政治活動・政策研究・広報活動などに大切に活用させていただきます。
+          </p>
+          <ul class="support__list">
+            <li class="support__list-item">
+              <span class="support__list-label">振込先銀行</span>
+              <span class="support__list-value">〇〇銀行 〇〇支店</span>
+            </li>
+            <li class="support__list-item">
+              <span class="support__list-label">口座種別</span>
+              <span class="support__list-value">普通預金</span>
+            </li>
+            <li class="support__list-item">
+              <span class="support__list-label">口座番号</span>
+              <span class="support__list-value">〇〇〇〇〇〇〇</span>
+            </li>
+            <li class="support__list-item">
+              <span class="support__list-label">口座名義</span>
+              <span class="support__list-value">ナカムラ ユキノブ</span>
+            </li>
+          </ul>
+          <p class="support__note">※政治献金には法律上の規制があります。詳細はお問い合わせください。</p>
+        </div>
+
+        <!-- ボランティア -->
+        <div class="support__card">
+          <div class="support__card-header">
+            <div class="support__icon">🤝</div>
+            <h3 class="support__card-title">ボランティア申し込み</h3>
+          </div>
+          <p class="support__card-desc">
+            街頭活動・チラシ配布・イベントスタッフなど、様々な形でご参加いただけます。お気軽にお申し込みください。
+          </p>
+          <form class="support__form" id="volunteerForm" action="contact.php" method="POST">
+            <input type="hidden" name="type" value="volunteer" />
+            <div class="form-group">
+              <label for="vol-name">お名前 <span class="required">*</span></label>
+              <input type="text" id="vol-name" name="vol_name" placeholder="山田 太郎" required />
+            </div>
+            <div class="form-group">
+              <label for="vol-email">メールアドレス <span class="required">*</span></label>
+              <input type="email" id="vol-email" name="vol_email" placeholder="example@email.com" required />
+            </div>
+            <div class="form-group">
+              <label for="vol-activity">参加希望の活動</label>
+              <select id="vol-activity" name="vol_activity">
+                <option value="">選択してください</option>
+                <option value="street">街頭・チラシ配布</option>
+                <option value="event">イベントスタッフ</option>
+                <option value="sns">SNS・広報サポート</option>
+                <option value="office">事務作業</option>
+                <option value="other">その他・相談したい</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="vol-message">メッセージ</label>
+              <textarea id="vol-message" name="vol_message" rows="3" placeholder="ご都合や質問など、お気軽にどうぞ。"></textarea>
+            </div>
+            <div class="form-submit">
+              <button type="submit" class="btn btn--primary btn--lg">申し込む</button>
+            </div>
+          </form>
+        </div>
+
       </div>
     </div>
   </section>
