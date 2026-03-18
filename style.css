@@ -698,6 +698,18 @@ input, textarea, select { font-family: inherit; }
   font-size: 2.5rem;
   margin-bottom: 1.25rem;
 }
+.service__num {
+  font-size: 3.5rem;
+  font-weight: 900;
+  font-family: var(--font-en, 'Inter', sans-serif);
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin-bottom: 1.25rem;
+  letter-spacing: -.02em;
+}
 .service__title {
   font-size: 1.2rem;
   font-weight: 700;
