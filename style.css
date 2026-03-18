@@ -727,6 +727,10 @@ input, textarea, select { font-family: inherit; }
   font-family: var(--font-jp);
 }
 
+/* Policy section overrides */
+#policy .service__title { font-size: 2.4rem; }
+#policy .service__text  { font-size: 1.196rem; }
+
 .service__list {
   display: flex;
   flex-direction: column;
