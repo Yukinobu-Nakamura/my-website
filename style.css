@@ -206,11 +206,40 @@ input, textarea, select { font-family: inherit; }
   justify-content: space-between;
 }
 
+.header__brand {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
 .header__logo {
   display: flex;
   align-items: center;
   gap: .75rem;
   color: var(--white);
+}
+
+.header__social {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  margin-left: .75rem;
+}
+
+.header-social-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity .2s, transform .2s;
+  flex-shrink: 0;
+}
+
+.header-social-btn:hover {
+  opacity: .8;
+  transform: translateY(-1px);
 }
 
 .logo-mark {
