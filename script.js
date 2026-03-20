@@ -170,23 +170,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const footerToggleEls = document.querySelectorAll('.footer [data-en][data-ja]');
   let showingJa = false;
 
-  // Header: fix each element to the wider of EN/JA to prevent layout shift
+  // Header: fix width to EN size; scale font when showing JA so each char matches EN letter size
   headerToggleEls.forEach(el => {
     el.style.display = 'inline-block';
     el.style.textAlign = 'center';
+    const baseFontSize = parseFloat(getComputedStyle(el).fontSize);
     const orig = el.textContent;
     el.textContent = el.dataset.en;
     const enW = el.offsetWidth;
     el.textContent = el.dataset.ja;
     const jaW = el.offsetWidth;
     el.textContent = orig;
-    el.style.minWidth = Math.max(enW, jaW) + 'px';
+    el.style.width = enW + 'px';
+    el._enWidth = enW;
+    el._jaWidth = jaW;
+    el._baseFontSize = baseFontSize;
   });
 
   // Footer: fix each element to JA width (Japanese is the base layout)
   footerToggleEls.forEach(el => {
-    const isInline = el.tagName === 'A' || el.tagName === 'SPAN';
-    if (isInline) {
+    if (el.tagName === 'A' || el.tagName === 'SPAN') {
       el.style.display = 'inline-block';
     }
     const orig = el.textContent;
@@ -202,7 +205,18 @@ document.addEventListener('DOMContentLoaded', () => {
       el.style.transition = 'opacity 0.4s';
       el.style.opacity = '0';
       setTimeout(() => {
-        el.textContent = showingJa ? el.dataset.ja : el.dataset.en;
+        if (showingJa) {
+          el.textContent = el.dataset.ja;
+          // Scale font so JA characters appear at same size as EN letters
+          if (el._jaWidth !== undefined && el._jaWidth > el._enWidth) {
+            el.style.fontSize = (el._baseFontSize * el._enWidth / el._jaWidth) + 'px';
+          }
+        } else {
+          el.textContent = el.dataset.en;
+          if (el._baseFontSize !== undefined) {
+            el.style.fontSize = el._baseFontSize + 'px';
+          }
+        }
         el.style.opacity = '1';
       }, 400);
     });
