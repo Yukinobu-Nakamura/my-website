@@ -210,6 +210,12 @@ input, textarea, select { font-family: inherit; }
   display: flex;
   align-items: center;
   gap: .75rem;
+  flex-shrink: 0;
+}
+
+.nav {
+  flex: 1;
+  margin-left: 2rem;
 }
 
 .header__logo {
@@ -266,9 +272,9 @@ input, textarea, select { font-family: inherit; }
 .nav__list {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  justify-content: space-between;
+  gap: 0;
 }
-.nav__list > li:last-child { margin-left: auto; }
 
 .nav__link {
   font-size: .85rem;
@@ -279,6 +285,7 @@ input, textarea, select { font-family: inherit; }
   border: 1.5px solid rgba(255,255,255,.35);
   border-radius: var(--radius-full);
   padding: .4rem 1rem;
+  white-space: nowrap;
 }
 .nav__link:hover {
   border-color: rgba(255,255,255,.7);
@@ -1202,6 +1209,7 @@ input, textarea, select { font-family: inherit; }
   font-size: .87rem;
   color: rgba(255,255,255,.5);
   font-family: var(--font-jp);
+  white-space: nowrap;
 }
 .footer__nav-col a:hover { color: var(--purple-300); }
 
@@ -1296,8 +1304,7 @@ input, textarea, select { font-family: inherit; }
     z-index: 999;
   }
   .nav.open { transform: translateX(0); }
-  .nav__list { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-  .nav__list > li:last-child { margin-left: 0; }
+  .nav__list { flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 1.5rem; }
   .nav__link { font-size: 1rem; color: rgba(255,255,255,.8); }
   .hamburger { display: flex; z-index: 1001; position: relative; }
   .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
