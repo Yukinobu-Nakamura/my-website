@@ -166,28 +166,48 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', updateActiveNav, { passive: true });
 
   /* -------- Nav label toggle EN ⇔ JA every 5s -------- */
-  const toggleLinks = document.querySelectorAll('.nav__link[data-en][data-ja], .logo-text[data-en][data-ja]');
+  // Header nav/logo: fix width to EN size, scale font for JA
+  const headerToggleEls = document.querySelectorAll('.nav__link[data-en][data-ja], .header__logo .logo-text[data-en][data-ja]');
+  // Footer and other elements: just swap text (block/flex elements, no width fix needed)
+  const footerToggleEls = document.querySelectorAll('.footer [data-en][data-ja]');
   let showingJa = false;
 
-  // Fix each element width to the wider of EN/JA text to prevent layout shift
-  toggleLinks.forEach(el => {
+  // Fix header elements to EN text width; store EN/JA widths and base font-size
+  headerToggleEls.forEach(el => {
     el.style.display = 'inline-block';
     el.style.textAlign = 'center';
     const orig = el.textContent;
+    const baseFontSize = parseFloat(getComputedStyle(el).fontSize);
     el.textContent = el.dataset.en;
     const enW = el.offsetWidth;
     el.textContent = el.dataset.ja;
     const jaW = el.offsetWidth;
     el.textContent = orig;
-    el.style.minWidth = Math.max(enW, jaW) + 'px';
+    el.style.width = enW + 'px';        // Fixed at EN width
+    el.style.overflow = 'hidden';
+    el._enWidth = enW;
+    el._jaWidth = jaW;
+    el._baseFontSize = baseFontSize;
   });
 
   const applyNavLabels = () => {
-    toggleLinks.forEach(el => {
+    const allEls = [...headerToggleEls, ...footerToggleEls];
+    allEls.forEach(el => {
       el.style.transition = 'opacity 0.4s';
       el.style.opacity = '0';
       setTimeout(() => {
-        el.textContent = showingJa ? el.dataset.ja : el.dataset.en;
+        if (showingJa) {
+          el.textContent = el.dataset.ja;
+          // For header elements: shrink font if JA is wider than fixed EN width
+          if (el._enWidth !== undefined && el._jaWidth > el._enWidth) {
+            el.style.fontSize = (el._baseFontSize * el._enWidth / el._jaWidth) + 'px';
+          }
+        } else {
+          el.textContent = el.dataset.en;
+          if (el._baseFontSize !== undefined) {
+            el.style.fontSize = el._baseFontSize + 'px';
+          }
+        }
         el.style.opacity = '1';
       }, 400);
     });
