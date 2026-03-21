@@ -170,6 +170,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const footerToggleEls = document.querySelectorAll('.footer [data-en][data-ja]');
   let showingJa = false;
 
+  // Fix brand width to EN size so SNS icons don't shift when name changes to JA
+  const headerBrand = document.querySelector('.header__brand');
+  if (headerBrand) {
+    headerBrand.style.minWidth = headerBrand.offsetWidth + 'px';
+  }
+
   // Footer: fix each element to JA width (Japanese is the base layout)
   footerToggleEls.forEach(el => {
     if (el.tagName === 'A' || el.tagName === 'SPAN') {
