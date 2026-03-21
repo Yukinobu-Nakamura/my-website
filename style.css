@@ -236,7 +236,7 @@ input, textarea, select { font-family: inherit; }
 .nav__list {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 .nav__link {
@@ -969,7 +969,7 @@ input, textarea, select { font-family: inherit; }
   margin-bottom: .875rem;
 }
 .footer__tagline {
-  font-size: .87rem;
+  font-size: 1rem;
   color: rgba(255,255,255,.4);
   font-family: var(--font-jp);
   margin-bottom: 1.5rem;
@@ -1003,7 +1003,7 @@ input, textarea, select { font-family: inherit; }
 }
 .footer__nav-col { display: flex; flex-direction: column; gap: .875rem; }
 .footer__nav-head {
-  font-size: .75rem;
+  font-size: .875rem;
   font-weight: 700;
   letter-spacing: .15em;
   text-transform: uppercase;
@@ -1012,7 +1012,7 @@ input, textarea, select { font-family: inherit; }
 }
 .footer__nav-col ul { display: flex; flex-direction: column; gap: .6rem; }
 .footer__nav-col a {
-  font-size: .87rem;
+  font-size: 1rem;
   color: rgba(255,255,255,.5);
   font-family: var(--font-jp);
 }
@@ -1028,11 +1028,11 @@ input, textarea, select { font-family: inherit; }
   justify-content: space-between;
 }
 .footer__bottom p {
-  font-size: .8rem;
+  font-size: .9rem;
   color: rgba(255,255,255,.35);
 }
 .footer__privacy {
-  font-size: .8rem;
+  font-size: .9rem;
   color: rgba(255,255,255,.4);
 }
 .footer__privacy:hover { color: var(--purple-300); }
