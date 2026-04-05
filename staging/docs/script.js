@@ -165,46 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   window.addEventListener('scroll', updateActiveNav, { passive: true });
 
-  /* -------- Nav label toggle EN ⇔ JA every 5s -------- */
-  const headerToggleEls = document.querySelectorAll('.nav__link[data-en][data-ja], .header__logo .logo-text[data-en][data-ja]');
-  const footerToggleEls = document.querySelectorAll('.footer [data-en][data-ja]');
-  let showingJa = false;
-
-  // Fix brand width to EN size so SNS icons don't shift when name changes to JA
-  const headerBrand = document.querySelector('.header__brand');
-  if (headerBrand) {
-    headerBrand.style.minWidth = headerBrand.offsetWidth + 'px';
-  }
-
-  // Footer: fix each element to JA width (Japanese is the base layout)
-  footerToggleEls.forEach(el => {
-    if (el.tagName === 'A' || el.tagName === 'SPAN') {
-      el.style.display = 'inline-block';
-    }
-    const orig = el.textContent;
-    el.textContent = el.dataset.ja;
-    const jaW = el.offsetWidth;
-    el.textContent = orig;
-    if (jaW > 0) el.style.minWidth = jaW + 'px';
-  });
-
-  const applyNavLabels = () => {
-    const allEls = [...headerToggleEls, ...footerToggleEls];
-    allEls.forEach(el => {
-      el.style.transition = 'opacity 0.4s';
-      el.style.opacity = '0';
-      setTimeout(() => {
-        el.textContent = showingJa ? el.dataset.ja : el.dataset.en;
-        el.style.opacity = '1';
-      }, 400);
-    });
-  };
-
-  setInterval(() => {
-    showingJa = !showingJa;
-    applyNavLabels();
-  }, 5000);
-
   /* -------- Contact form (client-side only) -------- */
   const form        = document.getElementById('contactForm');
   const formMessage = document.getElementById('formMessage');
