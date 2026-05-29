@@ -214,13 +214,15 @@ document.addEventListener('DOMContentLoaded', () => {
     '再生の道': 'policy', '都政': 'policy', '都議': 'policy',
     '会計': 'accounting', '監査': 'accounting', '公認会計士': 'accounting',
     'CPA': 'accounting', '財務': 'accounting', 'IPO': 'accounting',
+    '活動': 'activity', 'イベント': 'activity',
+    'プライベート': 'other',
   };
 
   function tagsToCategory(tags) {
     for (const t of tags) {
       if (HASHTAG_CATEGORY[t]) return HASHTAG_CATEGORY[t];
     }
-    return 'activity';
+    return 'other';
   }
 
   function stripHtml(html) {
