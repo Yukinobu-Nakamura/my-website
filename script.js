@@ -125,25 +125,27 @@ document.addEventListener('DOMContentLoaded', () => {
   revealElements.forEach(el => revealObserver.observe(el));
 
   /* -------- Works filter -------- */
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  const workCards  = document.querySelectorAll('.works__card');
+  let currentBlogFilter = 'all';
 
+  function applyBlogFilter(filter) {
+    currentBlogFilter = filter;
+    document.querySelectorAll('#blogGrid .works__card').forEach(card => {
+      const cat = card.getAttribute('data-category');
+      const show = filter === 'all' || cat === filter;
+      card.style.display = show ? '' : 'none';
+      if (show) {
+        card.classList.remove('visible');
+        setTimeout(() => card.classList.add('visible'), 30);
+      }
+    });
+  }
+
+  const filterBtns = document.querySelectorAll('.filter-btn');
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-
-      const filter = btn.getAttribute('data-filter');
-      workCards.forEach(card => {
-        const cat = card.getAttribute('data-category');
-        const show = filter === 'all' || cat === filter;
-        card.style.display = show ? '' : 'none';
-        if (show) {
-          // Re-trigger animation
-          card.classList.remove('visible');
-          setTimeout(() => card.classList.add('visible'), 30);
-        }
-      });
+      applyBlogFilter(btn.getAttribute('data-filter'));
     });
   });
 
@@ -204,6 +206,82 @@ document.addEventListener('DOMContentLoaded', () => {
     showingJa = !showingJa;
     applyNavLabels();
   }, 5000);
+
+  /* -------- Note.com blog integration -------- */
+  const NOTE_USERNAME = 'cpa_man_10969';
+  const HASHTAG_CATEGORY = {
+    '政策': 'policy', '行政': 'policy', '豊島区': 'policy',
+    '再生の道': 'policy', '都政': 'policy', '都議': 'policy',
+    '会計': 'accounting', '監査': 'accounting', '公認会計士': 'accounting',
+    'CPA': 'accounting', '財務': 'accounting', 'IPO': 'accounting',
+  };
+
+  function tagsToCategory(tags) {
+    for (const t of tags) {
+      if (HASHTAG_CATEGORY[t]) return HASHTAG_CATEGORY[t];
+    }
+    return 'activity';
+  }
+
+  function stripHtml(html) {
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    return div.textContent || div.innerText || '';
+  }
+
+  async function loadNoteArticles() {
+    const grid = document.getElementById('blogGrid');
+    if (!grid) return;
+    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://note.com/${NOTE_USERNAME}/rss`)}`;
+    try {
+      const res = await fetch(proxyUrl);
+      if (!res.ok) throw new Error('proxy');
+      const data = await res.json();
+      const xml  = new DOMParser().parseFromString(data.contents, 'text/xml');
+      const items = Array.from(xml.querySelectorAll('item'));
+      if (!items.length) throw new Error('empty');
+
+      grid.innerHTML = items.slice(0, 6).map((item, i) => {
+        const title  = item.querySelector('title')?.textContent?.trim() || '無題';
+        const link   = item.querySelector('link')?.textContent?.trim() || '#';
+        const desc   = stripHtml(item.querySelector('description')?.textContent || '').replace(/\s+/g, ' ').trim();
+        const tags   = Array.from(item.querySelectorAll('category')).map(c => c.textContent.trim());
+        const imgUrl = item.querySelector('enclosure')?.getAttribute('url') || '';
+        const cat    = tagsToCategory(tags);
+        const thumbAttr = imgUrl
+          ? `style="background-image:url('${imgUrl}');background-size:cover;background-position:center;"`
+          : `class="works__thumb works__thumb--${(i % 6) + 1}"`;
+        const thumbClass = imgUrl ? 'class="works__thumb"' : '';
+
+        return `
+          <div class="works__card reveal" data-category="${cat}">
+            <div ${imgUrl ? `class="works__thumb" style="background-image:url('${imgUrl}');background-size:cover;background-position:center;"` : `class="works__thumb works__thumb--${(i % 6) + 1}"`}>
+              <div class="works__overlay">
+                <span class="works__tag">${tags[0] || 'note'}</span>
+              </div>
+            </div>
+            <div class="works__info">
+              <h3 class="works__title">
+                <a href="${link}" target="_blank" rel="noopener noreferrer">${title}</a>
+              </h3>
+              <p class="works__desc">${desc.slice(0, 80)}${desc.length > 80 ? '…' : ''}</p>
+              <div class="works__tech">
+                ${tags.slice(0, 3).map(t => `<span>#${t}</span>`).join('')}
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+
+      grid.querySelectorAll('.works__card').forEach(el => revealObserver.observe(el));
+      applyBlogFilter(currentBlogFilter);
+
+    } catch {
+      grid.innerHTML = `<p class="works__note-fallback">記事の読み込みができませんでした。
+        <a href="https://note.com/${NOTE_USERNAME}" target="_blank" rel="noopener noreferrer">noteで読む →</a></p>`;
+    }
+  }
+
+  loadNoteArticles();
 
   /* -------- Contact form (client-side only) -------- */
   const form        = document.getElementById('contactForm');

@@ -907,6 +907,29 @@ input, textarea, select { font-family: inherit; }
   border-radius: var(--radius-sm);
 }
 
+.works__loading,
+.works__note-fallback {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--gray-500);
+  padding: 3rem 1rem;
+  font-size: .95rem;
+}
+.works__note-fallback a,
+.blog__note-link a {
+  color: var(--purple-600);
+  font-weight: 600;
+  text-decoration: none;
+}
+.works__note-fallback a:hover,
+.blog__note-link a:hover { text-decoration: underline; }
+
+.blog__note-link {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: .95rem;
+}
+
 /* =============================================
    NEWS
    ============================================= */
