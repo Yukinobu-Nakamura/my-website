@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* -------- Note.com blog integration -------- */
   const NOTE_USERNAME = 'cpa_man_10969';
   const HASHTAG_CATEGORY = {
-    '政策': 'policy', '行政': 'policy', '豊島区': 'policy',
+    '政策': 'policy', '政治': 'policy', '財政': 'policy', '行政': 'policy', '豊島区': 'policy',
     '再生の道': 'policy', '都政': 'policy', '都議': 'policy',
     '会計': 'accounting', '監査': 'accounting', '公認会計士': 'accounting',
     'CPA': 'accounting', '財務': 'accounting', 'IPO': 'accounting',
