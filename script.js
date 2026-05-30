@@ -212,8 +212,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const HASHTAG_CATEGORY = {
     '政策': 'policy', '政治': 'policy', '財政': 'policy', '行政': 'policy', '豊島区': 'policy',
     '再生の道': 'policy', '都政': 'policy', '都議': 'policy',
-    '会計': 'accounting', '監査': 'accounting', '公認会計士': 'accounting',
-    'CPA': 'accounting', '財務': 'accounting', 'IPO': 'accounting',
+    '会計': 'other', '監査': 'other', '公認会計士': 'other',
+    'CPA': 'other', '財務': 'other', 'IPO': 'other',
     '活動': 'activity', 'イベント': 'activity',
     'プライベート': 'other',
   };
