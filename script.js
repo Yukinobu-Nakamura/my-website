@@ -177,6 +177,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (headerBrand) {
     headerBrand.style.minWidth = headerBrand.offsetWidth + 'px';
   }
+  // Lock logo text to EN width so JA text occupies same space
+  const headerLogoText = document.querySelector('.header__logo .logo-text');
+  if (headerLogoText) {
+    headerLogoText.style.display = 'inline-block';
+    headerLogoText.style.minWidth = headerLogoText.offsetWidth + 'px';
+  }
 
   // Footer: fix each element to JA width (Japanese is the base layout)
   footerToggleEls.forEach(el => {
