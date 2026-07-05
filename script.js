@@ -291,15 +291,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   loadNoteArticles();
 
-  /* -------- Contact form (client-side only) -------- */
-  const form        = document.getElementById('contactForm');
-  const formMessage = document.getElementById('formMessage');
+  /* -------- Forms (お問い合わせ / ボランティア) -------- */
+  // contact.php は本番(さくらサーバー)でのみ動作する。
+  // テスト環境(GitHub Pages)では送信できないため、失敗時は正直にエラーを表示する。
+  const setupForm = (formId, messageEl, successText) => {
+    const form = document.getElementById(formId);
+    if (!form) return;
 
-  if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const submitBtn = form.querySelector('button[type="submit"]');
+      const btnLabel  = submitBtn.textContent;
       submitBtn.disabled = true;
       submitBtn.textContent = '送信中...';
 
@@ -310,24 +313,38 @@ document.addEventListener('DOMContentLoaded', () => {
           body: formData,
         });
 
-        if (response.ok) {
-          formMessage.className = 'form-message success';
-          formMessage.textContent = 'お問い合わせありがとうございます。2営業日以内にご返信いたします。';
+        let result = null;
+        try { result = await response.json(); } catch { /* JSONでない応答 */ }
+
+        if (response.ok && result && result.success) {
+          messageEl.className = 'form-message success';
+          messageEl.textContent = successText;
           form.reset();
+        } else if (result && result.errors) {
+          messageEl.className = 'form-message error';
+          messageEl.textContent = result.errors.join(' ');
         } else {
           throw new Error('Server error');
         }
       } catch {
-        // Fallback: show success for static sites (replace with real backend)
-        formMessage.className = 'form-message success';
-        formMessage.textContent = 'お問い合わせを受け付けました。ご連絡をお待ちください。';
-        form.reset();
+        messageEl.className = 'form-message error';
+        messageEl.textContent = '送信できませんでした。お手数ですが info@nakamura-yukinobu.jp まで直接メールをお送りください。';
       } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = '送信する';
-        formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        submitBtn.textContent = btnLabel;
+        messageEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
     });
+  };
+
+  const formMessage = document.getElementById('formMessage');
+  setupForm('contactForm', formMessage,
+    'お問い合わせありがとうございます。内容を確認のうえ、順次ご返信いたします。');
+
+  const volMessage = document.getElementById('volFormMessage');
+  if (volMessage) {
+    setupForm('volunteerForm', volMessage,
+      'お申し込みありがとうございます。追ってご連絡いたします。');
   }
 
 });

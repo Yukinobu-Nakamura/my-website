@@ -1,13 +1,13 @@
 <?php
 /**
- * contact.php - お問い合わせフォーム送信処理
+ * contact.php - お問い合わせ/ボランティア申し込みフォーム送信処理
  * さくらレンタルサーバー対応
  */
 
 // ---- 設定 ----
 define('MAIL_TO',      'info@nakamura-yukinobu.jp');  // 受信メールアドレス
 define('MAIL_FROM',    'noreply@nakamura-yukinobu.jp'); // 送信元アドレス
-define('SITE_NAME',    '中村幸信 Portfolio');
+define('SITE_NAME',    '中村幸信 公式サイト');
 define('ALLOWED_ORIGIN', 'https://nakamura-yukinobu.jp');
 
 // ---- ヘッダー設定 ----
@@ -25,19 +25,44 @@ function sanitize(string $val): string {
     return htmlspecialchars(trim($val), ENT_QUOTES, 'UTF-8');
 }
 
-$name    = sanitize($_POST['name']    ?? '');
-$company = sanitize($_POST['company'] ?? '');
-$email   = sanitize($_POST['email']   ?? '');
-$subject = sanitize($_POST['subject'] ?? '');
-$message = sanitize($_POST['message'] ?? '');
-$privacy = isset($_POST['privacy'])   ? true : false;
+$type = sanitize($_POST['type'] ?? 'contact');
+
+if ($type === 'volunteer') {
+    // ボランティア申し込みフォーム
+    $name    = sanitize($_POST['vol_name']    ?? '');
+    $email   = sanitize($_POST['vol_email']   ?? '');
+    $message = sanitize($_POST['vol_message'] ?? '');
+    $subjectLabel = 'ボランティア申し込み';
+    $messageRequired = false;
+} else {
+    // お問い合わせフォーム
+    $name    = sanitize($_POST['name']    ?? '');
+    $email   = sanitize($_POST['email']   ?? '');
+    $subject = sanitize($_POST['subject'] ?? '');
+    $message = sanitize($_POST['message'] ?? '');
+    $subjectMap = [
+        'hp'       => 'HPについて',
+        'policy'   => '政策について',
+        'sns'      => 'SNSなどの発信について',
+        'donation' => 'サポートについて',
+        'news'     => '政治・経済のニュースについて',
+        'other'    => 'その他',
+    ];
+    $subjectLabel = $subjectMap[$subject] ?? 'お問い合わせ';
+    $messageRequired = true;
+}
+
+$privacy = isset($_POST['privacy']);
+
+// メールヘッダインジェクション対策(Reply-To 等に使う値の改行を明示除去)
+$email = str_replace(["\r", "\n", "%0a", "%0d"], '', $email);
 
 // ---- バリデーション ----
 $errors = [];
 if (empty($name))                        $errors[] = 'お名前は必須です。';
 if (empty($email))                       $errors[] = 'メールアドレスは必須です。';
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'メールアドレスの形式が正しくありません。';
-if (empty($message))                     $errors[] = 'お問い合わせ内容は必須です。';
+if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'メールアドレスの形式が正しくありません。';
+if ($messageRequired && empty($message)) $errors[] = 'お問い合わせ内容は必須です。';
 if (!$privacy)                           $errors[] = 'プライバシーポリシーへの同意が必要です。';
 
 if (!empty($errors)) {
@@ -47,30 +72,22 @@ if (!empty($errors)) {
 }
 
 // ---- メール送信 ----
-$subjectMap = [
-    'web'    => 'Webサイト制作',
-    'ai'     => 'AI開発',
-    'app'    => 'アプリ開発',
-    'design' => 'UIデザイン',
-    'other'  => 'その他',
-];
-$subjectLabel = $subjectMap[$subject] ?? 'お問い合わせ';
+$mailSubject = '[' . SITE_NAME . '] ' . $subjectLabel;
 
-$mailSubject = '[' . SITE_NAME . '] お問い合わせ: ' . $subjectLabel;
+$messageBlock = $message !== '' ? $message : '(記載なし)';
 
 $mailBody = <<<EOT
-{$name} 様よりお問い合わせがありました。
+{$name} 様より「{$subjectLabel}」の送信がありました。
 
 ■ お名前: {$name}
-■ 会社名: {$company}
 ■ メールアドレス: {$email}
 ■ 件名: {$subjectLabel}
 
-■ お問い合わせ内容:
-{$message}
+■ 内容:
+{$messageBlock}
 
 ---
-このメールは nakamura-yukinobu.jp のお問い合わせフォームから自動送信されました。
+このメールは nakamura-yukinobu.jp のフォームから自動送信されました。
 EOT;
 
 // 文字化け対策
@@ -86,22 +103,22 @@ $sent = mb_send_mail(MAIL_TO, $mailSubject, $mailBody, $headers);
 
 // ---- 自動返信メール ----
 if ($sent) {
-    $autoReplySubject = '[' . SITE_NAME . '] お問い合わせを受け付けました';
+    $autoReplySubject = '[' . SITE_NAME . '] 送信を受け付けました';
     $autoReplyBody    = <<<EOT
 {$name} 様
 
-お問い合わせいただきありがとうございます。
-以下の内容でお問い合わせを受け付けました。
+ご連絡いただきありがとうございます。
+以下の内容で受け付けました。
 
 ■ 件名: {$subjectLabel}
-■ お問い合わせ内容:
-{$message}
+■ 内容:
+{$messageBlock}
 
-通常2営業日以内にご返信いたします。
+内容を確認のうえ、順次ご返信いたします。
 しばらくお待ちください。
 
 ---
-中村 幸信
+中村幸信 公式サイト
 https://nakamura-yukinobu.jp
 EOT;
 
@@ -114,7 +131,7 @@ EOT;
 
 // ---- レスポンス ----
 if ($sent) {
-    echo json_encode(['success' => true, 'message' => 'お問い合わせを受け付けました。']);
+    echo json_encode(['success' => true, 'message' => '送信を受け付けました。']);
 } else {
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'メール送信に失敗しました。時間をおいて再度お試しください。']);
