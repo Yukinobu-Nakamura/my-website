@@ -1,5 +1,5 @@
 /* =============================================
-   YUKINOBU NAKAMURA PORTFOLIO - script.js
+   中村幸信後援会 公式サイト - script.js
    ============================================= */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* -------- Header: scroll effect -------- */
   const header = document.getElementById('header');
   const handleHeaderScroll = () => {
-    header.classList.toggle('scrolled', window.scrollY > 30);
+    header.classList.toggle('is-scrolled', window.scrollY > 30);
   };
   window.addEventListener('scroll', handleHeaderScroll, { passive: true });
   handleHeaderScroll();
@@ -17,26 +17,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const nav       = document.getElementById('nav');
 
   hamburger.addEventListener('click', () => {
-    const isOpen = nav.classList.toggle('open');
-    hamburger.classList.toggle('active', isOpen);
+    const isOpen = nav.classList.toggle('is-open');
+    hamburger.classList.toggle('is-active', isOpen);
     hamburger.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
     document.body.style.overflow = isOpen ? 'hidden' : '';
   });
 
-  // Close menu when a nav link is clicked
+  // ナビリンクをクリックしたらメニューを閉じる
   nav.querySelectorAll('.nav__link').forEach(link => {
     link.addEventListener('click', () => {
-      nav.classList.remove('open');
-      hamburger.classList.remove('active');
+      nav.classList.remove('is-open');
+      hamburger.classList.remove('is-active');
       document.body.style.overflow = '';
     });
   });
 
-  // Close menu when clicking outside
+  // メニュー外クリックで閉じる
   document.addEventListener('click', (e) => {
     if (!nav.contains(e.target) && !hamburger.contains(e.target)) {
-      nav.classList.remove('open');
-      hamburger.classList.remove('active');
+      nav.classList.remove('is-open');
+      hamburger.classList.remove('is-active');
       document.body.style.overflow = '';
     }
   });
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* -------- Back to Top button -------- */
   const backToTop = document.getElementById('backToTop');
   window.addEventListener('scroll', () => {
-    backToTop.classList.toggle('visible', window.scrollY > 400);
+    backToTop.classList.toggle('is-visible', window.scrollY > 400);
   }, { passive: true });
 
   backToTop.addEventListener('click', (e) => {
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
-  /* -------- Smooth scroll for all anchor links -------- */
+  /* -------- Smooth scroll for anchor links -------- */
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', (e) => {
       const target = document.querySelector(anchor.getAttribute('href'));
@@ -65,58 +65,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* -------- Number counter animation -------- */
-  const counters = document.querySelectorAll('.numbers__value[data-count]');
-  let countersAnimated = false;
-
-  const animateCounter = (el) => {
-    const target = parseInt(el.getAttribute('data-count'), 10);
-    const duration = 1800;
-    const start = performance.now();
-
-    const update = (now) => {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
-      el.textContent = Math.round(eased * target);
-      if (progress < 1) requestAnimationFrame(update);
-    };
-    requestAnimationFrame(update);
-  };
-
-  const numbersSection = document.querySelector('.numbers');
-  if (numbersSection) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && !countersAnimated) {
-          countersAnimated = true;
-          counters.forEach(counter => animateCounter(counter));
-        }
-      });
-    }, { threshold: 0.3 });
-    observer.observe(numbersSection);
-  }
-
-  /* -------- Scroll Reveal -------- */
+  /* -------- Scroll fade-in -------- */
   const revealElements = document.querySelectorAll(
-    '.service__card, .works__card, .about__grid > *, ' +
-    '.news__item, .numbers__item, .section-header'
+    '.section-header, .message__body, .profile__grid > *, ' +
+    '.policy__card, .kouenkai__card, .news__item, .contact__wrap'
   );
 
-  revealElements.forEach((el, i) => {
-    el.classList.add('reveal');
-    // Stagger delay based on position within parent
-    const siblings = Array.from(el.parentNode.children);
-    const idx = siblings.indexOf(el);
-    if (idx > 0 && idx <= 4) {
-      el.classList.add(`reveal-delay-${idx}`);
-    }
-  });
+  revealElements.forEach(el => el.classList.add('fade-in'));
 
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
+        entry.target.classList.add('is-visible');
         revealObserver.unobserve(entry.target);
       }
     });
@@ -124,32 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   revealElements.forEach(el => revealObserver.observe(el));
 
-  /* -------- Works filter -------- */
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  const workCards  = document.querySelectorAll('.works__card');
-
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      const filter = btn.getAttribute('data-filter');
-      workCards.forEach(card => {
-        const cat = card.getAttribute('data-category');
-        const show = filter === 'all' || cat === filter;
-        card.style.display = show ? '' : 'none';
-        if (show) {
-          // Re-trigger animation
-          card.classList.remove('visible');
-          setTimeout(() => card.classList.add('visible'), 30);
-        }
-      });
-    });
-  });
-
   /* -------- Active nav link on scroll -------- */
   const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav__link:not(.nav__link--cta)');
 
   const updateActiveNav = () => {
     const scrollPos = window.scrollY + header.offsetHeight + 40;
@@ -157,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const top    = section.offsetTop;
       const bottom = top + section.offsetHeight;
       const id     = section.getAttribute('id');
-      const link   = document.querySelector(`.nav__link[href="#${id}"]`);
+      const link   = document.querySelector(`.nav__link[href="#${id}"]:not(.nav__link--cta)`);
       if (link) {
         link.classList.toggle('active-nav', scrollPos >= top && scrollPos < bottom);
       }
@@ -165,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   window.addEventListener('scroll', updateActiveNav, { passive: true });
 
-  /* -------- Contact form (client-side only) -------- */
+  /* -------- Contact form -------- */
   const form        = document.getElementById('contactForm');
   const formMessage = document.getElementById('formMessage');
 
@@ -184,18 +120,25 @@ document.addEventListener('DOMContentLoaded', () => {
           body: formData,
         });
 
-        if (response.ok) {
-          formMessage.className = 'form-message success';
-          formMessage.textContent = 'お問い合わせありがとうございます。2営業日以内にご返信いたします。';
+        let result = null;
+        try {
+          result = await response.json();
+        } catch { /* JSONでない応答(テスト環境等) */ }
+
+        if (response.ok && result && result.success) {
+          formMessage.className = 'form-message is-success';
+          formMessage.textContent = 'お問い合わせありがとうございます。内容を確認のうえ、順次ご返信いたします。';
           form.reset();
+        } else if (result && result.errors) {
+          formMessage.className = 'form-message is-error';
+          formMessage.textContent = result.errors.join(' ');
         } else {
           throw new Error('Server error');
         }
       } catch {
-        // Fallback: show success for static sites (replace with real backend)
-        formMessage.className = 'form-message success';
-        formMessage.textContent = 'お問い合わせを受け付けました。ご連絡をお待ちください。';
-        form.reset();
+        // 送信基盤が使えない環境(GitHub Pages のテスト環境等)では正直にエラーを表示する
+        formMessage.className = 'form-message is-error';
+        formMessage.textContent = '送信できませんでした。お手数ですが info@nakamura-yukinobu.jp まで直接メールをお送りください。';
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = '送信する';
