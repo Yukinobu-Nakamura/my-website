@@ -8,7 +8,22 @@
 define('MAIL_TO',      'info@nakamura-yukinobu.jp');  // 受信メールアドレス
 define('MAIL_FROM',    'noreply@nakamura-yukinobu.jp'); // 送信元アドレス
 define('SITE_NAME',    '中村幸信 公式サイト');
-define('ALLOWED_ORIGIN', 'https://nakamura-yukinobu.jp');
+
+// ---- CORS(テスト環境 GitHub Pages からの送信を許可) ----
+$allowedOrigins = [
+    'https://nakamura-yukinobu.jp',
+    'https://www.nakamura-yukinobu.jp',
+    'https://yukinobu-nakamura.github.io',
+];
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if (in_array($origin, $allowedOrigins, true)) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Vary: Origin');
+}
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
 
 // ---- ヘッダー設定 ----
 header('Content-Type: application/json; charset=UTF-8');
