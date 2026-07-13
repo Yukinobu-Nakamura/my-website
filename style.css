@@ -396,10 +396,46 @@ input, textarea, select { font-family: inherit; }
 /* Hero Visual */
 .hero__visual {
   position: relative;
-  height: 380px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+}
+
+.hero__photo-frame {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: clamp(440px, 66vh, 660px);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0,0,0,.3);
+  border: 1px solid rgba(255,255,255,.15);
+}
+
+.hero__photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+  display: block;
+}
+
+.hero__photo-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 2.5rem 1.75rem 1.25rem;
+  background: linear-gradient(to top, rgba(46,16,101,.85), rgba(46,16,101,0));
+}
+
+.hero__photo-caption-text {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--white);
+  font-family: var(--font-jp);
+  letter-spacing: .12em;
+}
+
+.hero__photo-caption-text .hero__card-name {
+  font-size: 1.5rem;
 }
 
 .orb {
