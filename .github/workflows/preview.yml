@@ -36,6 +36,7 @@ jobs:
         run: |
           mkdir -p docs
           cp style.css script.js docs/
+          cp -r assets docs/
           staticrypt index.html 404.html privacy-policy.html \
             -p "cpaataru10969" \
             -d docs \
