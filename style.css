@@ -334,7 +334,8 @@ input, textarea, select { font-family: inherit; }
    ============================================= */
 .hero {
   position: relative;
-  min-height: 100vh;
+  height: 100vh;
+  min-height: 700px;
   background: var(--gradient-hero);
   display: flex;
   align-items: center;
@@ -354,11 +355,17 @@ input, textarea, select { font-family: inherit; }
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* minmax(0,1fr): はみ出す写真が左のテキスト列を潰さないようにする */
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
   gap: 4rem;
-  align-items: center;
-  padding-top: 100px;
-  padding-bottom: 80px;
+  align-items: start;
+  height: 100%;
+  padding-top: 90px;
+  padding-bottom: 0;
+}
+
+.hero__content {
+  margin-top: clamp(1rem, 6vh, 4rem);
 }
 
 .hero__eyebrow {
@@ -404,15 +411,16 @@ input, textarea, select { font-family: inherit; }
   margin: 0;
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: flex-start;
 }
 
 .hero__figure-img {
   display: block;
-  height: clamp(640px, 96vh, 1060px);
-  max-width: 100%;
-  object-fit: contain;
-  object-position: bottom center;
+  /* ナビ直下からヒーロー下端までを使い切る(横は列からはみ出してよい) */
+  height: calc(100vh - 90px);
+  min-height: 610px;
+  width: auto;
+  max-width: none;
   /* 端のフェードは画像のアルファに焼き込み済み(CSSマスク不要) */
   filter: drop-shadow(0 24px 60px rgba(20,0,60,.45));
 }
@@ -1393,12 +1401,15 @@ input, textarea, select { font-family: inherit; }
   .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
   /* Hero */
+  .hero { height: auto; min-height: 100vh; }
   .hero__inner {
     grid-template-columns: 1fr;
     text-align: center;
+    height: auto;
     padding-top: 120px;
     padding-bottom: 100px;
   }
+  .hero__content { margin-top: 0; }
   .hero__actions { justify-content: center; }
   .hero__visual { display: none; }
 
