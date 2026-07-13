@@ -237,31 +237,72 @@ document.addEventListener('DOMContentLoaded', () => {
     return div.textContent || div.innerText || '';
   }
 
+  // RSS の XML テキストを記事オブジェクトの配列に変換
+  function parseRssItems(xmlText) {
+    const xml = new DOMParser().parseFromString(xmlText, 'text/xml');
+    const items = Array.from(xml.querySelectorAll('item'));
+    if (!items.length) return null;
+    return items.map(item => {
+      // note の RSS はサムネイルを media:thumbnail のテキストとして配信する
+      // (ヘッダー画像のない記事にはタグ自体が無い)
+      const mediaThumb = item.getElementsByTagName('media:thumbnail')[0]
+        || item.getElementsByTagNameNS('http://search.yahoo.com/mrss/', 'thumbnail')[0];
+      return {
+        title:  item.querySelector('title')?.textContent?.trim() || '無題',
+        link:   item.querySelector('link')?.textContent?.trim() || '#',
+        desc:   stripHtml(item.querySelector('description')?.textContent || '').replace(/\s+/g, ' ').trim(),
+        tags:   Array.from(item.querySelectorAll('category')).map(c => c.textContent.trim()),
+        imgUrl: mediaThumb?.textContent?.trim()
+          || item.querySelector('enclosure')?.getAttribute('url')
+          || '',
+      };
+    });
+  }
+
+  // CORS プロキシは不安定なため多段フォールバックで取得する
+  async function fetchNoteItems(rssUrl) {
+    // 1)-2) 生XMLを返すプロキシ(media:thumbnail をそのまま拾える)
+    const xmlProxies = [
+      u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
+      u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    ];
+    for (const proxy of xmlProxies) {
+      try {
+        const res = await fetch(proxy(rssUrl));
+        if (!res.ok) continue;
+        const parsed = parseRssItems(await res.text());
+        if (parsed) return parsed;
+      } catch { /* 次のプロキシへ */ }
+    }
+    // 3) rss2json(JSON変換。media:thumbnail は落ちるので本文中の画像で代替)
+    try {
+      const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.status === 'ok' && data.items?.length) {
+          return data.items.map(it => ({
+            title:  it.title || '無題',
+            link:   it.link || '#',
+            desc:   stripHtml(it.description || '').replace(/\s+/g, ' ').trim(),
+            tags:   it.categories || [],
+            imgUrl: it.thumbnail
+              || it.enclosure?.link
+              || ((it.content || it.description || '').match(/<img[^>]+src="([^"]+)"/) || [])[1]
+              || '',
+          }));
+        }
+      }
+    } catch { /* フォールバック尽きた */ }
+    return null;
+  }
+
   async function loadNoteArticles() {
     const grid = document.getElementById('blogGrid');
     if (!grid) return;
-    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://note.com/${NOTE_USERNAME}/rss`)}`;
-    try {
-      const res = await fetch(proxyUrl);
-      if (!res.ok) throw new Error('proxy');
-      const data = await res.json();
-      const xml  = new DOMParser().parseFromString(data.contents, 'text/xml');
-      const items = Array.from(xml.querySelectorAll('item'));
-      if (!items.length) throw new Error('empty');
-
-      grid.innerHTML = items.slice(0, 6).map((item, i) => {
-        const title  = item.querySelector('title')?.textContent?.trim() || '無題';
-        const link   = item.querySelector('link')?.textContent?.trim() || '#';
-        const desc   = stripHtml(item.querySelector('description')?.textContent || '').replace(/\s+/g, ' ').trim();
-        const tags   = Array.from(item.querySelectorAll('category')).map(c => c.textContent.trim());
-        // note の RSS はサムネイルを media:thumbnail のテキストとして配信する
-        // (ヘッダー画像のない記事にはタグ自体が無い)
-        const mediaThumb = item.getElementsByTagName('media:thumbnail')[0]
-          || item.getElementsByTagNameNS('http://search.yahoo.com/mrss/', 'thumbnail')[0];
-        const imgUrl = mediaThumb?.textContent?.trim()
-          || item.querySelector('enclosure')?.getAttribute('url')
-          || '';
-        const cat    = tagsToCategory(tags);
+    const articles = await fetchNoteItems(`https://note.com/${NOTE_USERNAME}/rss`);
+    if (articles) {
+      grid.innerHTML = articles.slice(0, 6).map(({ title, link, desc, tags, imgUrl }, i) => {
+        const cat = tagsToCategory(tags);
 
         return `
           <div class="works__card reveal" data-category="${cat}">
@@ -285,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
       grid.querySelectorAll('.works__card').forEach(el => revealObserver.observe(el));
       applyBlogFilter(currentBlogFilter);
 
-    } catch {
+    } else {
       grid.innerHTML = `<p class="works__note-fallback">記事の読み込みができませんでした。
         <a href="https://note.com/${NOTE_USERNAME}" target="_blank" rel="noopener noreferrer">noteで読む →</a></p>`;
     }
@@ -294,8 +335,8 @@ document.addEventListener('DOMContentLoaded', () => {
   loadNoteArticles();
 
   /* -------- Forms (お問い合わせ / ボランティア) -------- */
-  // contact.php は本番(さくらサーバー)でのみ動作する。
-  // テスト環境(GitHub Pages)では送信できないため、失敗時は正直にエラーを表示する。
+  // 送信先は本番(さくら)の contact.php への絶対URL。GitHub Pages からの
+  // クロスオリジン送信は、さくら側の contact.php が CORS 対応版である必要がある。
   const setupForm = (formId, messageEl, successText) => {
     const form = document.getElementById(formId);
     if (!form) return;

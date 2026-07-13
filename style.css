@@ -413,9 +413,8 @@ input, textarea, select { font-family: inherit; }
   max-width: 100%;
   object-fit: contain;
   object-position: bottom center;
+  /* 端のフェードは画像のアルファに焼き込み済み(CSSマスク不要) */
   filter: drop-shadow(0 24px 60px rgba(20,0,60,.45));
-  -webkit-mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
 }
 
 .hero__figure-caption {
