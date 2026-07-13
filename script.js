@@ -254,12 +254,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const link   = item.querySelector('link')?.textContent?.trim() || '#';
         const desc   = stripHtml(item.querySelector('description')?.textContent || '').replace(/\s+/g, ' ').trim();
         const tags   = Array.from(item.querySelectorAll('category')).map(c => c.textContent.trim());
-        const imgUrl = item.querySelector('enclosure')?.getAttribute('url') || '';
+        // note の RSS はサムネイルを media:thumbnail のテキストとして配信する
+        // (ヘッダー画像のない記事にはタグ自体が無い)
+        const mediaThumb = item.getElementsByTagName('media:thumbnail')[0]
+          || item.getElementsByTagNameNS('http://search.yahoo.com/mrss/', 'thumbnail')[0];
+        const imgUrl = mediaThumb?.textContent?.trim()
+          || item.querySelector('enclosure')?.getAttribute('url')
+          || '';
         const cat    = tagsToCategory(tags);
-        const thumbAttr = imgUrl
-          ? `style="background-image:url('${imgUrl}');background-size:cover;background-position:center;"`
-          : `class="works__thumb works__thumb--${(i % 6) + 1}"`;
-        const thumbClass = imgUrl ? 'class="works__thumb"' : '';
 
         return `
           <div class="works__card reveal" data-category="${cat}">

@@ -409,35 +409,35 @@ input, textarea, select { font-family: inherit; }
 
 .hero__figure-img {
   display: block;
-  height: clamp(540px, 84vh, 860px);
+  height: clamp(640px, 96vh, 1060px);
   max-width: 100%;
   object-fit: contain;
   object-position: bottom center;
   filter: drop-shadow(0 24px 60px rgba(20,0,60,.45));
-  -webkit-mask-image: linear-gradient(to bottom, #000 86%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 86%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
 }
 
 .hero__figure-caption {
   position: absolute;
-  top: 10%;
-  right: 0;
+  top: 6%;
+  right: -0.5rem;
   writing-mode: vertical-rl;
   text-orientation: mixed;
 }
 
 .hero__figure-caption-text {
-  font-size: clamp(1.2rem, 1.7vw, 1.6rem);
+  font-size: clamp(2rem, 3.2vw, 3rem);
   font-weight: 600;
   color: var(--white);
   font-family: var(--font-jp);
-  letter-spacing: .22em;
-  line-height: 1.6;
-  text-shadow: 0 4px 24px rgba(20,0,60,.55);
+  letter-spacing: .18em;
+  line-height: 1.5;
+  text-shadow: 0 6px 30px rgba(20,0,60,.6);
 }
 
 .hero__figure-caption-text .hero__card-name {
-  font-size: clamp(2rem, 3vw, 2.8rem);
+  font-size: clamp(3.4rem, 5.4vw, 5rem);
   font-weight: 900;
 }
 
