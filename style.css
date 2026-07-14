@@ -334,8 +334,7 @@ input, textarea, select { font-family: inherit; }
    ============================================= */
 .hero {
   position: relative;
-  height: 100vh;
-  min-height: 700px;
+  /* 高さは写真(80vh弱)に追従させ、直下の実績帯が1画面目に入るようにする */
   background: var(--gradient-hero);
   display: flex;
   align-items: center;
@@ -359,7 +358,6 @@ input, textarea, select { font-family: inherit; }
   grid-template-columns: minmax(0,1fr) minmax(0,1fr);
   gap: 4rem;
   align-items: start;
-  height: 100%;
   padding-top: 90px;
   padding-bottom: 0;
 }
@@ -416,9 +414,9 @@ input, textarea, select { font-family: inherit; }
 
 .hero__figure-img {
   display: block;
-  /* ナビ直下からヒーロー下端までを使い切る(横は列からはみ出してよい) */
-  height: calc(100vh - 90px);
-  min-height: 610px;
+  /* ナビ直下から画面の8割程度(横は列からはみ出してよい) */
+  height: calc((100vh - 90px) * 0.8);
+  min-height: 500px;
   width: auto;
   max-width: none;
   /* 端のフェードは画像のアルファに焼き込み済み(CSSマスク不要) */
@@ -428,7 +426,7 @@ input, textarea, select { font-family: inherit; }
 .hero__figure-caption {
   position: absolute;
   top: 6%;
-  right: -0.5rem;
+  right: -2.5rem;
   writing-mode: vertical-rl;
   text-orientation: mixed;
 }
