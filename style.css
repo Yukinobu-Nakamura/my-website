@@ -334,10 +334,12 @@ input, textarea, select { font-family: inherit; }
    ============================================= */
 .hero {
   position: relative;
-  /* 高さは写真(80vh弱)に追従させ、直下の実績帯が1画面目に入るようにする */
+  /* px基準の固定高: ブラウザ拡大縮小で文字と同率でスケールする。
+     写真の下側はこの高さで切れ、直下に実績帯が来る */
+  height: 880px;
   background: var(--gradient-hero);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   overflow: hidden;
 }
 
@@ -414,11 +416,11 @@ input, textarea, select { font-family: inherit; }
 
 .hero__figure-img {
   display: block;
-  /* ナビ直下から画面の8割程度(横は列からはみ出してよい) */
-  height: calc((100vh - 90px) * 0.8);
-  min-height: 500px;
-  width: auto;
+  /* 列幅基準(=px基準)なのでズーム・ウィンドウ幅に追従する。
+     はみ出す分は横=中央ガター側へ、下=heroの高さで切る */
+  width: 150%;
   max-width: none;
+  height: auto;
   /* 端のフェードは画像のアルファに焼き込み済み(CSSマスク不要) */
   filter: drop-shadow(0 24px 60px rgba(20,0,60,.45));
 }
@@ -426,7 +428,7 @@ input, textarea, select { font-family: inherit; }
 .hero__figure-caption {
   position: absolute;
   top: 6%;
-  right: -2.5rem;
+  right: -6rem;
   writing-mode: vertical-rl;
   text-orientation: mixed;
 }
