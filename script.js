@@ -259,13 +259,51 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // note API v2 のJSONを記事オブジェクトの配列に変換
+  // (RSSはヘッダー画像あり記事しかサムネイルを持たないが、APIは全記事に自動生成 eyecatch がある)
+  function parseApiContents(json) {
+    const contents = json?.data?.contents;
+    if (!Array.isArray(contents) || !contents.length) return null;
+    return contents.map(c => ({
+      title:  c.name || '無題',
+      link:   c.noteUrl || `https://note.com/${NOTE_USERNAME}/n/${c.key || ''}`,
+      desc:   stripHtml(c.body || '').replace(/\s+/g, ' ').trim(),
+      tags:   (c.hashtags || [])
+        .map(h => (h?.hashtag?.name ?? h?.name ?? '').replace(/^#/, ''))
+        .filter(Boolean),
+      imgUrl: c.eyecatch || c.thumbnailExternalUrl || '',
+    }));
+  }
+
   // CORS プロキシは不安定なため多段フォールバックで取得する
   async function fetchNoteItems(rssUrl) {
-    // 1)-2) 生XMLを返すプロキシ(media:thumbnail をそのまま拾える)
-    const xmlProxies = [
+    const proxies = [
       u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
       u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
     ];
+
+    // 0) 自前プロキシ(さくら)経由の note API — 最も安定・全記事にサムネイルあり
+    try {
+      const res = await fetch('https://nakamura-yukinobu.jp/note-feed.php');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.items?.length) return data.items;
+      }
+    } catch { /* 未設置・障害時は次へ */ }
+
+    // 1) note API を汎用プロキシ経由で直接取得(eyecatch が全記事にある)
+    const apiUrl = `https://note.com/api/v2/creators/${NOTE_USERNAME}/contents?kind=note&page=1`;
+    for (const proxy of proxies) {
+      try {
+        const res = await fetch(proxy(apiUrl));
+        if (!res.ok) continue;
+        const parsed = parseApiContents(await res.json());
+        if (parsed) return parsed;
+      } catch { /* 次のプロキシへ */ }
+    }
+
+    // 2) RSS(生XML)をプロキシ経由で(media:thumbnail はヘッダー画像あり記事のみ)
+    const xmlProxies = proxies;
     for (const proxy of xmlProxies) {
       try {
         const res = await fetch(proxy(rssUrl));
