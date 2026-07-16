@@ -109,10 +109,10 @@ EOT;
 mb_language('Japanese');
 mb_internal_encoding('UTF-8');
 
+// Content-Type/MIME-Version は指定しない。mb_send_mail が本文を ISO-2022-JP に
+// 変換して適切なヘッダを付与するため、UTF-8 を宣言すると本文が文字化けする。
 $headers  = "From: " . MAIL_FROM . "\r\n";
 $headers .= "Reply-To: " . $email . "\r\n";
-$headers .= "MIME-Version: 1.0\r\n";
-$headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
 // エンベロープ送信元を明示(-f)。省略するとサーバー既定の ～@www1361.sakura.ne.jp になり、
 // SPF レコードのないホスト名のため Gmail の送信者要件(SPF/DKIM 必須)で受信拒否される。
@@ -142,8 +142,6 @@ https://nakamura-yukinobu.jp
 EOT;
 
     $autoHeaders  = "From: " . MAIL_FROM . "\r\n";
-    $autoHeaders .= "MIME-Version: 1.0\r\n";
-    $autoHeaders .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
     mb_send_mail($email, $autoReplySubject, $autoReplyBody, $autoHeaders, $envelopeFrom);
 }
