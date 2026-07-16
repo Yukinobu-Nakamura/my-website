@@ -114,7 +114,11 @@ $headers .= "Reply-To: " . $email . "\r\n";
 $headers .= "MIME-Version: 1.0\r\n";
 $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
-$sent = mb_send_mail(MAIL_TO, $mailSubject, $mailBody, $headers);
+// エンベロープ送信元を明示(-f)。省略するとサーバー既定の ～@www1361.sakura.ne.jp になり、
+// SPF レコードのないホスト名のため Gmail の送信者要件(SPF/DKIM 必須)で受信拒否される。
+$envelopeFrom = '-f' . MAIL_FROM;
+
+$sent = mb_send_mail(MAIL_TO, $mailSubject, $mailBody, $headers, $envelopeFrom);
 
 // ---- 自動返信メール ----
 if ($sent) {
@@ -141,7 +145,7 @@ EOT;
     $autoHeaders .= "MIME-Version: 1.0\r\n";
     $autoHeaders .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
-    mb_send_mail($email, $autoReplySubject, $autoReplyBody, $autoHeaders);
+    mb_send_mail($email, $autoReplySubject, $autoReplyBody, $autoHeaders, $envelopeFrom);
 }
 
 // ---- レスポンス ----
