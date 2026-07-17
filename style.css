@@ -377,8 +377,30 @@ input, textarea, select { font-family: inherit; }
   margin-bottom: 1.25rem;
 }
 
+.hero__name {
+  display: flex;
+  flex-direction: column;
+  gap: .15rem;
+  margin-bottom: 1.25rem;
+  font-family: var(--font-jp);
+}
+
+.hero__name-kana {
+  font-size: .9rem;
+  letter-spacing: .35em;
+  color: rgba(255,255,255,.65);
+}
+
+.hero__name-kanji {
+  font-size: clamp(2.6rem, 6vw, 4.4rem);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1.15;
+  letter-spacing: .06em;
+}
+
 .hero__title {
-  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
   font-weight: 900;
   color: var(--white);
   line-height: 1.25;
@@ -1118,6 +1140,19 @@ input, textarea, select { font-family: inherit; }
   font-family: var(--font-jp);
 }
 
+.support__legal-notes {
+  margin: 0 0 .75rem;
+  padding-left: 1.2rem;
+  font-family: var(--font-jp);
+}
+
+.support__legal-notes li {
+  font-size: .8rem;
+  color: var(--gray-500);
+  line-height: 1.7;
+  margin-bottom: .25rem;
+}
+
 .support__form .form-group { margin-bottom: 1rem; }
 .support__form .form-submit { text-align: center; margin-top: 1.25rem; }
 
@@ -1315,6 +1350,15 @@ input, textarea, select { font-family: inherit; }
   font-size: .8rem;
   color: rgba(255,255,255,.35);
 }
+.footer__operator {
+  font-family: var(--font-jp);
+  color: rgba(255,255,255,.55) !important;
+}
+.footer__operator a {
+  color: rgba(255,255,255,.55);
+  text-decoration: underline;
+}
+.footer__operator a:hover { color: var(--purple-300); }
 .footer__privacy {
   font-size: .8rem;
   color: rgba(255,255,255,.4);
@@ -1444,7 +1488,8 @@ input, textarea, select { font-family: inherit; }
 }
 
 @media (max-width: 480px) {
-  .hero__title { font-size: 2rem; }
+  .hero__name-kanji { font-size: 2.6rem; }
+  .hero__title { font-size: 1.35rem; }
   .btn { padding: .75rem 1.5rem; font-size: .875rem; }
   .numbers__inner { grid-template-columns: 1fr 1fr; }
 }

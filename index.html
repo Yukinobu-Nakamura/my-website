@@ -5,6 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="中村幸信 - 公認会計士・再生の道 豊島区都政対策委員。監査法人で上場企業20社以上の監査を担当。チェックの力で政治を再生します。" />
   <title>中村幸信 | 公認会計士・豊島区都政対策委員</title>
+
+  <!-- OGP / SNSシェア用カード -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="中村幸信 公式サイト" />
+  <meta property="og:title" content="中村幸信 | 公認会計士・豊島区都政対策委員" />
+  <meta property="og:description" content="チェックの力で政治を再生する。現役公認会計士・中村幸信の公式サイト。" />
+  <meta property="og:url" content="https://nakamura-yukinobu.jp/" />
+  <meta property="og:image" content="https://nakamura-yukinobu.jp/assets/img/ogp.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="ja_JP" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@cpa_man_10969" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="assets/img/favicon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -17,7 +35,7 @@
     <div class="container header__inner">
       <div class="header__brand">
         <a href="#top" class="header__logo">
-          <span class="logo-text" data-en="Yukinobu Nakamura" data-ja="中村幸信">Yukinobu Nakamura</span>
+          <span class="logo-text">中村幸信</span>
         </a>
         <div class="header__social">
           <a href="https://x.com/cpa_man_10969" class="header-social-btn" aria-label="X" target="_blank" rel="noopener noreferrer" style="background:#000;">
@@ -30,12 +48,12 @@
       </div>
       <nav class="nav" id="nav">
         <ul class="nav__list">
-          <li><a href="#about"    class="nav__link" data-en="ABOUT"   data-ja="私について">ABOUT</a></li>
-          <li><a href="#news"         class="nav__link" data-en="NEWS"    data-ja="最新情報">NEWS</a></li>
-          <li><a href="#policy"   class="nav__link" data-en="POLICY"  data-ja="政策">POLICY</a></li>
-          <li><a href="#blog"     class="nav__link" data-en="BLOG"    data-ja="ブログ">BLOG</a></li>
-          <li><a href="#support"  class="nav__link nav__link--cta" data-en="SUPPORT" data-ja="サポート">SUPPORT</a></li>
-          <li><a href="#contact"  class="nav__link" data-en="CONTACT" data-ja="お問い合わせ">CONTACT</a></li>
+          <li><a href="#about"    class="nav__link">私について</a></li>
+          <li><a href="#news"     class="nav__link">最新情報</a></li>
+          <li><a href="#policy"   class="nav__link">政策</a></li>
+          <li><a href="#blog"     class="nav__link">ブログ</a></li>
+          <li><a href="#support"  class="nav__link nav__link--cta">サポート</a></li>
+          <li><a href="#contact"  class="nav__link">お問い合わせ</a></li>
         </ul>
       </nav>
       <button class="hamburger" id="hamburger" aria-label="メニューを開く">
@@ -50,6 +68,7 @@
     <div class="container hero__inner">
       <div class="hero__content">
         <p class="hero__eyebrow">公認会計士 × 政治</p>
+        <p class="hero__name"><span class="hero__name-kana">なかむら ゆきのぶ</span><span class="hero__name-kanji">中村 幸信</span></p>
         <h1 class="hero__title">
           チェックの力で<br />
           <span class="gradient-text">政治を再生する</span>
@@ -154,7 +173,7 @@
         <li class="news__item">
           <time class="news__date" datetime="2026-05-31">2026.05.31</time>
           <span class="news__category">お知らせ</span>
-          <a href="#" class="news__title-link">公式ホームページをリニューアル公開しました</a>
+          <span class="news__title-link">公式ホームページをリニューアル公開しました</span>
         </li>
       </ul>
     </div>
@@ -188,7 +207,7 @@
           <div class="service__num">03</div>
           <h3 class="service__title">複雑な仕組みの見える化・分かる化！</h3>
           <p class="service__text">
-            政治資金やあらゆる行政の複雑な仕組みを１００社以上の監査の経験から、批判だけでなくシンプルな改善案を提案します。誰でもできる、無駄なくできることで、自治体・住民双方にとってより良い仕組みの最適化を進めます。
+            政治資金やあらゆる行政の複雑な仕組みを100社以上の監査の経験から、批判だけでなくシンプルな改善案を提案します。誰でもできる、無駄なくできることで、自治体・住民双方にとってより良い仕組みの最適化を進めます。
           </p>
         </div>
         <div class="service__card">
@@ -251,7 +270,12 @@
           <div class="form-submit" style="margin: 1.5rem 0 1rem;">
             <a href="https://go2senkyo.com/donate/flow/195812" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--lg">寄付を行う</a>
           </div>
-          <p class="support__note">※政治献金には法律上の規制があります。総務省や都選管にお問い合わせください。</p>
+          <ul class="support__legal-notes">
+            <li>政治資金規正法により、外国人・外国法人等からの寄付はお受けできません。</li>
+            <li>ご本人名義以外の寄付・匿名の寄付はお受けできません。</li>
+            <li>同一年中の寄付額が5万円を超える場合、寄付者の氏名・住所・職業等が政治資金収支報告書に記載され、公表されます。</li>
+          </ul>
+          <p class="support__note">※このほか政治献金には法律上の規制があります。詳しくは総務省や都選管にお問い合わせください。</p>
         </div>
 
         <!-- ボランティア -->
@@ -356,9 +380,9 @@
     <div class="container footer__inner">
       <div class="footer__brand">
         <a href="#top" class="footer__logo">
-          <span class="logo-text" data-en="Yukinobu Nakamura" data-ja="中村幸信">Yukinobu Nakamura</span>
+          <span class="logo-text">中村幸信</span>
         </a>
-        <p class="footer__tagline" data-en="Regenerating Politics with the Power of Checks" data-ja="チェックの力で 政治を再生する">チェックの力で 政治を再生する</p>
+        <p class="footer__tagline">チェックの力で 政治を再生する</p>
         <div class="footer__social">
 <a href="https://x.com/cpa_man_10969" class="social-btn" aria-label="X" target="_blank" rel="noopener noreferrer" style="background:#000; border-color:#000;">
             <svg width="20" height="20" fill="#fff" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
@@ -370,27 +394,28 @@
       </div>
       <nav class="footer__nav">
         <div class="footer__nav-col">
-          <p class="footer__nav-head" data-en="Menu" data-ja="メニュー">Menu</p>
+          <p class="footer__nav-head">メニュー</p>
           <ul>
-            <li><a href="#about"   data-en="About"   data-ja="私について">About</a></li>
-            <li><a href="#news"    data-en="News"    data-ja="最新情報">News</a></li>
-            <li><a href="#policy"  data-en="Policy"  data-ja="政策">Policy</a></li>
-            <li><a href="#blog"    data-en="Blog"    data-ja="ブログ">Blog</a></li>
-            <li><a href="#contact" data-en="Contact" data-ja="お問い合わせ">Contact</a></li>
-            <li><a href="#support" data-en="Support" data-ja="サポート">Support</a></li>
+            <li><a href="#about">私について</a></li>
+            <li><a href="#news">最新情報</a></li>
+            <li><a href="#policy">政策</a></li>
+            <li><a href="#blog">ブログ</a></li>
+            <li><a href="#contact">お問い合わせ</a></li>
+            <li><a href="#support">サポート</a></li>
           </ul>
         </div>
         <div class="footer__nav-col">
-          <p class="footer__nav-head" data-en="Contact" data-ja="お問い合わせ">Contact</p>
+          <p class="footer__nav-head">お問い合わせ</p>
           <ul>
             <li><a href="mailto:info@nakamura-yukinobu.jp">info@nakamura-yukinobu.jp</a></li>
-            <li><a href="#contact" data-en="Contact Form" data-ja="お問い合わせフォーム">お問い合わせフォーム</a></li>
+            <li><a href="#contact">お問い合わせフォーム</a></li>
           </ul>
         </div>
       </nav>
     </div>
     <div class="footer__bottom">
       <div class="container">
+        <p class="footer__operator">運営：中村幸信後援会（お問い合わせ：<a href="mailto:info@nakamura-yukinobu.jp">info@nakamura-yukinobu.jp</a>）</p>
         <p>&copy; 2026 Yukinobu Nakamura. All Rights Reserved.</p>
         <a href="privacy-policy.html" class="footer__privacy">プライバシーポリシー</a>
       </div>
