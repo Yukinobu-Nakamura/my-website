@@ -33,8 +33,10 @@ if (is_readable(CACHE_FILE) && (time() - filemtime(CACHE_FILE)) < CACHE_TTL) {
 }
 
 // ---- note API v2 から取得 ----
-function fetch_note_api(): ?array {
-    $url = 'https://note.com/api/v2/creators/' . NOTE_USERNAME . '/contents?kind=note&page=1';
+// 1ページ=最新6件のみのため、3ページ(最新18件)まで取得してマージする。
+// これが6件のままだと、直近の投稿ジャンルに偏ってカテゴリフィルタが空になる。
+function fetch_note_page(int $page): ?array {
+    $url = 'https://note.com/api/v2/creators/' . NOTE_USERNAME . '/contents?kind=note&page=' . $page;
     $ch = curl_init($url);
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
@@ -48,13 +50,24 @@ function fetch_note_api(): ?array {
     curl_close($ch);
     if ($body === false || $code !== 200) return null;
     $json = json_decode($body, true);
-    if (!is_array($json) || empty($json['data']['contents'])) return null;
-    return $json['data']['contents'];
+    if (!is_array($json) || !isset($json['data']['contents'])) return null;
+    return $json['data'];
+}
+
+function fetch_note_api(): ?array {
+    $all = [];
+    for ($page = 1; $page <= 3; $page++) {
+        $data = fetch_note_page($page);
+        if ($data === null) break;
+        $all = array_merge($all, $data['contents']);
+        if (!empty($data['isLastPage']) || empty($data['contents'])) break;
+    }
+    return $all !== [] ? $all : null;
 }
 
 function to_items(array $contents): array {
     $items = [];
-    foreach (array_slice($contents, 0, 12) as $c) {
+    foreach (array_slice($contents, 0, 18) as $c) {
         $tags = [];
         foreach (($c['hashtags'] ?? []) as $h) {
             $name = $h['hashtag']['name'] ?? $h['name'] ?? '';

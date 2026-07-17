@@ -127,11 +127,17 @@ document.addEventListener('DOMContentLoaded', () => {
   /* -------- Works filter -------- */
   let currentBlogFilter = 'all';
 
+  // フィルタごとに該当記事の先頭6件だけ表示する(全体では最新18件を読み込み済み)
+  const BLOG_MAX_VISIBLE = 6;
+
   function applyBlogFilter(filter) {
     currentBlogFilter = filter;
+    let shown = 0;
     document.querySelectorAll('#blogGrid .works__card').forEach(card => {
       const cat = card.getAttribute('data-category');
-      const show = filter === 'all' || cat === filter;
+      const match = filter === 'all' || cat === filter;
+      const show = match && shown < BLOG_MAX_VISIBLE;
+      if (show) shown++;
       card.style.display = show ? '' : 'none';
       if (show) {
         card.classList.remove('visible');
@@ -171,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const NOTE_USERNAME = 'cpa_man_10969';
   const HASHTAG_CATEGORY = {
     '政策': 'policy', '政治': 'policy', '財政': 'policy', '行政': 'policy', '豊島区': 'policy',
-    '再生の道': 'policy', '都政': 'policy', '都議': 'policy',
+    '再生の道': 'policy', '都政': 'policy', '都議': 'policy', '杉並区': 'policy', '選挙': 'policy',
     '会計': 'other', '監査': 'other', '公認会計士': 'other',
     'CPA': 'other', '財務': 'other', 'IPO': 'other',
     '活動': 'activity', 'イベント': 'activity',
@@ -293,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!grid) return;
     const articles = await fetchNoteItems(`https://note.com/${NOTE_USERNAME}/rss`);
     if (articles) {
-      grid.innerHTML = articles.slice(0, 6).map(({ title, link, desc, tags, imgUrl }, i) => {
+      grid.innerHTML = articles.slice(0, 18).map(({ title, link, desc, tags, imgUrl }, i) => {
         const cat = tagsToCategory(tags);
 
         return `
