@@ -127,9 +127,9 @@ document.addEventListener('DOMContentLoaded', () => {
   /* -------- Works filter -------- */
   let currentBlogFilter = 'all';
 
-  // タグでフィルタした上で、該当する最新記事を最大18件表示する
+  // タグでフィルタした上で、該当する最新記事を最大6件表示する
   // (母集団はnote-feed.phpが返す最新60件。サムネイルは表示時に遅延読込)
-  const BLOG_MAX_VISIBLE = 18;
+  const BLOG_MAX_VISIBLE = 6;
 
   function applyBlogFilter(filter) {
     currentBlogFilter = filter;
