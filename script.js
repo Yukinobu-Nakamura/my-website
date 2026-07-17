@@ -127,8 +127,9 @@ document.addEventListener('DOMContentLoaded', () => {
   /* -------- Works filter -------- */
   let currentBlogFilter = 'all';
 
-  // フィルタごとに該当記事の先頭6件だけ表示する(全体では最新18件を読み込み済み)
-  const BLOG_MAX_VISIBLE = 6;
+  // タグでフィルタした上で、該当する最新記事を最大18件表示する
+  // (母集団はnote-feed.phpが返す最新60件。サムネイルは表示時に遅延読込)
+  const BLOG_MAX_VISIBLE = 18;
 
   function applyBlogFilter(filter) {
     currentBlogFilter = filter;
@@ -140,6 +141,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (show) shown++;
       card.style.display = show ? '' : 'none';
       if (show) {
+        const thumb = card.querySelector('.works__thumb[data-img]');
+        if (thumb && !thumb.style.backgroundImage) {
+          thumb.style.backgroundImage = `url('${thumb.dataset.img}')`;
+          thumb.style.backgroundSize = 'cover';
+          thumb.style.backgroundPosition = 'center';
+        }
         card.classList.remove('visible');
         setTimeout(() => card.classList.add('visible'), 30);
       }
@@ -299,12 +306,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!grid) return;
     const articles = await fetchNoteItems(`https://note.com/${NOTE_USERNAME}/rss`);
     if (articles) {
-      grid.innerHTML = articles.slice(0, 18).map(({ title, link, desc, tags, imgUrl }, i) => {
+      grid.innerHTML = articles.map(({ title, link, desc, tags, imgUrl }, i) => {
         const cat = tagsToCategory(tags);
 
         return `
           <div class="works__card reveal" data-category="${cat}">
-            <div ${imgUrl ? `class="works__thumb" style="background-image:url('${imgUrl}');background-size:cover;background-position:center;"` : `class="works__thumb works__thumb--${(i % 6) + 1}"`}>
+            <div ${imgUrl ? `class="works__thumb" data-img="${imgUrl}"` : `class="works__thumb works__thumb--${(i % 6) + 1}"`}>
               <div class="works__overlay">
                 <span class="works__tag">${tags[0] || 'note'}</span>
               </div>

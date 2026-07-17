@@ -9,8 +9,11 @@
  */
 
 define('NOTE_USERNAME', 'cpa_man_10969');
-define('CACHE_FILE', sys_get_temp_dir() . '/note_feed_' . NOTE_USERNAME . '.json');
+define('CACHE_FILE', sys_get_temp_dir() . '/note_feed_v2_' . NOTE_USERNAME . '.json');
 define('CACHE_TTL', 900); // 15分
+define('MAX_PAGES', 10);   // note APIは1ページ=6件。10ページ=最新60件まで遡る
+define('MAX_ITEMS', 60);
+define('DESC_LEN', 200);   // 一覧カード用の抜粋。全文を返すとJSONが肥大するため切り詰める
 
 // ---- CORS(contact.php と同じ許可リスト) ----
 $allowedOrigins = [
@@ -33,8 +36,8 @@ if (is_readable(CACHE_FILE) && (time() - filemtime(CACHE_FILE)) < CACHE_TTL) {
 }
 
 // ---- note API v2 から取得 ----
-// 1ページ=最新6件のみのため、3ページ(最新18件)まで取得してマージする。
-// これが6件のままだと、直近の投稿ジャンルに偏ってカテゴリフィルタが空になる。
+// 1ページ=最新6件のみのため、MAX_PAGESまで遡って取得してマージする。
+// カテゴリフィルタはクライアント側でタグ判定するので、母集団を広く返す。
 function fetch_note_page(int $page): ?array {
     $url = 'https://note.com/api/v2/creators/' . NOTE_USERNAME . '/contents?kind=note&page=' . $page;
     $ch = curl_init($url);
@@ -56,27 +59,28 @@ function fetch_note_page(int $page): ?array {
 
 function fetch_note_api(): ?array {
     $all = [];
-    for ($page = 1; $page <= 3; $page++) {
+    for ($page = 1; $page <= MAX_PAGES; $page++) {
         $data = fetch_note_page($page);
         if ($data === null) break;
         $all = array_merge($all, $data['contents']);
-        if (!empty($data['isLastPage']) || empty($data['contents'])) break;
+        if (!empty($data['isLastPage']) || empty($data['contents']) || count($all) >= MAX_ITEMS) break;
     }
     return $all !== [] ? $all : null;
 }
 
 function to_items(array $contents): array {
     $items = [];
-    foreach (array_slice($contents, 0, 18) as $c) {
+    foreach (array_slice($contents, 0, MAX_ITEMS) as $c) {
         $tags = [];
         foreach (($c['hashtags'] ?? []) as $h) {
             $name = $h['hashtag']['name'] ?? $h['name'] ?? '';
             if ($name !== '') $tags[] = ltrim($name, '#');
         }
+        $desc = trim(preg_replace('/\s+/u', ' ', strip_tags($c['body'] ?? '')));
         $items[] = [
             'title'     => $c['name'] ?? '無題',
             'link'      => $c['noteUrl'] ?? ('https://note.com/' . NOTE_USERNAME . '/n/' . ($c['key'] ?? '')),
-            'desc'      => trim(preg_replace('/\s+/u', ' ', strip_tags($c['body'] ?? ''))),
+            'desc'      => mb_substr($desc, 0, DESC_LEN),
             'tags'      => $tags,
             'imgUrl'    => ($c['eyecatch'] ?? '') !== '' ? $c['eyecatch'] : ($c['thumbnailExternalUrl'] ?? ''),
             'publishAt' => $c['publishAt'] ?? '',
