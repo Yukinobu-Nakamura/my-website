@@ -12,33 +12,43 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', handleHeaderScroll, { passive: true });
   handleHeaderScroll();
 
-  /* -------- Hamburger menu -------- */
+  /* -------- Hamburger menu (SP: プッシュ式ドロワー) -------- */
   const hamburger = document.getElementById('hamburger');
   const nav       = document.getElementById('nav');
+  // body を position:fixed にしてスクロールを固定するため、開閉時に位置を退避・復元する
+  let navScrollY  = 0;
+
+  const openNav = () => {
+    navScrollY = window.scrollY;
+    document.body.style.top = `-${navScrollY}px`;
+    document.body.classList.add('nav-open');
+    nav.classList.add('open');
+    hamburger.classList.add('active');
+    hamburger.setAttribute('aria-label', 'メニューを閉じる');
+  };
+
+  const closeNav = () => {
+    if (!document.body.classList.contains('nav-open')) return;
+    document.body.classList.remove('nav-open');
+    document.body.style.top = '';
+    nav.classList.remove('open');
+    hamburger.classList.remove('active');
+    hamburger.setAttribute('aria-label', 'メニューを開く');
+    window.scrollTo({ top: navScrollY, left: 0, behavior: 'instant' });
+  };
 
   hamburger.addEventListener('click', () => {
-    const isOpen = nav.classList.toggle('open');
-    hamburger.classList.toggle('active', isOpen);
-    hamburger.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
-    document.body.style.overflow = isOpen ? 'hidden' : '';
+    document.body.classList.contains('nav-open') ? closeNav() : openNav();
   });
 
   // Close menu when a nav link is clicked
   nav.querySelectorAll('.nav__link').forEach(link => {
-    link.addEventListener('click', () => {
-      nav.classList.remove('open');
-      hamburger.classList.remove('active');
-      document.body.style.overflow = '';
-    });
+    link.addEventListener('click', closeNav);
   });
 
   // Close menu when clicking outside
   document.addEventListener('click', (e) => {
-    if (!nav.contains(e.target) && !hamburger.contains(e.target)) {
-      nav.classList.remove('open');
-      hamburger.classList.remove('active');
-      document.body.style.overflow = '';
-    }
+    if (!nav.contains(e.target) && !hamburger.contains(e.target)) closeNav();
   });
 
   /* -------- Back to Top button -------- */
