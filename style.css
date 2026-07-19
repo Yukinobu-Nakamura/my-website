@@ -700,7 +700,15 @@ input, textarea, select { font-family: inherit; }
 }
 .numbers__value--symbol {
   font-size: clamp(3.5rem, 7vw, 5rem);
-  line-height: .85;
+  /* 数字(.numbers__value)の行と同じ高さの箱に収め、ラベル位置を揃える
+     (加算pxは単位表記(1.5rem)行のディセント分。数字側の行高と一致させる実測値) */
+  display: inline-block;
+  vertical-align: bottom;
+  line-height: calc(clamp(2.5rem, 5vw, 3.5rem) + 4.8px);
+}
+/* タブレット帯は数字側の行高が僅かに高いため補正値を実測で調整 */
+@media (min-width: 768px) and (max-width: 999px) {
+  .numbers__value--symbol { line-height: calc(clamp(2.5rem, 5vw, 3.5rem) + 6.8px); }
 }
 .numbers__unit {
   font-size: 1.5rem;
@@ -1599,8 +1607,8 @@ input, textarea, select { font-family: inherit; }
   /* Numbers */
   .numbers__inner { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
   .numbers__item::after { display: none; }
-  /* ∞(働く意欲)の行高を数値(2.5rem)と揃え、隣の項目とラベル位置のズレを防ぐ */
-  .numbers__value--symbol { font-size: 2.9rem; line-height: calc(2.5rem - 3px); }
+  /* ∞(働く意欲)は携帯では少し小さく。行高は実測で数字側と一致させる */
+  .numbers__value--symbol { font-size: 2.9rem; line-height: calc(2.5rem + 6.8px); }
 
   /* Service */
   .service__grid { grid-template-columns: 1fr; }
