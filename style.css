@@ -1599,6 +1599,8 @@ input, textarea, select { font-family: inherit; }
   /* Numbers */
   .numbers__inner { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
   .numbers__item::after { display: none; }
+  /* ∞(働く意欲)の行高を数値(2.5rem)と揃え、隣の項目とラベル位置のズレを防ぐ */
+  .numbers__value--symbol { font-size: 2.9rem; line-height: calc(2.5rem - 3px); }
 
   /* Service */
   .service__grid { grid-template-columns: 1fr; }
