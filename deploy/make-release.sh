@@ -23,7 +23,7 @@ mkdir -p "$DEST"
 
 # release/ をリポジトリの公開ファイルと完全一致させる(余分なファイルは削除)
 CHANGED=$(rsync -rci --delete \
-  index.html 404.html 500.html privacy-policy.html \
+  index.html benkyobeya.html 404.html 500.html privacy-policy.html \
   style.css script.js robots.txt sitemap.xml .htaccess assets \
   "$DEST/" | awk '$1 !~ /^\./ || $1 ~ /c/ {print $2}' | grep -v '/$' || true)
 

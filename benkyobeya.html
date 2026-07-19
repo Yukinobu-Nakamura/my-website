@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="中村幸信の勉強部屋。現在開発中です。" />
+  <meta name="robots" content="noindex" />
+  <title>勉強部屋(準備中)| 中村幸信公式ホームページ</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="assets/img/favicon.png" type="image/png" sizes="96x96" />
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* このページ専用のスタイル */
+    .study-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--gradient-hero);
+      padding: 24px;
+      font-family: var(--font-jp);
+    }
+    .study-card {
+      text-align: center;
+      max-width: 560px;
+      width: 100%;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: var(--radius-xl);
+      backdrop-filter: blur(8px);
+      padding: 3rem 2rem 2.5rem;
+      box-shadow: 0 20px 60px rgba(59,26,120,.4);
+    }
+    .study-card__img {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 1.5rem;
+      box-shadow: 0 10px 30px rgba(59,26,120,.35), 0 0 0 6px rgba(255,255,255,.6);
+    }
+    .study-card__title {
+      color: var(--white);
+      font-size: clamp(1.4rem, 5vw, 1.9rem);
+      font-weight: 700;
+      letter-spacing: .06em;
+      margin-bottom: 1rem;
+    }
+    .study-card__text {
+      color: rgba(255,255,255,.9);
+      font-size: 1rem;
+      line-height: 2;
+      margin-bottom: 2rem;
+    }
+    .study-card__text strong {
+      display: block;
+      font-size: 1.15rem;
+      margin-bottom: .25rem;
+    }
+    .study-card .btn--home {
+      background: var(--white);
+      color: var(--purple-800);
+      font-weight: 700;
+      box-shadow: 0 10px 30px rgba(59,26,120,.35);
+    }
+    .study-card .btn--home:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 40px rgba(59,26,120,.5);
+    }
+  </style>
+</head>
+<body>
+
+  <main class="study-page">
+    <section class="study-card">
+      <img src="assets/img/nakamura_illust.png" alt="中村幸信のイラスト" class="study-card__img" width="512" height="512" />
+      <h1 class="study-card__title">中村幸信の勉強部屋</h1>
+      <p class="study-card__text">
+        <strong>現在開発中です。</strong>
+        政治やお金のことを一緒に学べるコンテンツを準備しています。<br />
+        公開までもう少しお待ちください。お楽しみに!
+      </p>
+      <a href="./" class="btn btn--home">ホームページに戻る</a>
+    </section>
+  </main>
+
+</body>
+</html>
