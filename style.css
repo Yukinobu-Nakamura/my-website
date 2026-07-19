@@ -1573,9 +1573,12 @@ input, textarea, select { font-family: inherit; }
   .hero__name-kanji { font-size: clamp(1.6rem, 8vw, 2.1rem); }
   .hero__title { font-size: clamp(.95rem, 4.6vw, 1.2rem); margin-bottom: .8rem; }
   .hero__subtitle { font-size: .76rem; line-height: 1.75; margin-bottom: 1.1rem; }
-  .hero__actions { gap: .5rem; }
-  .hero__actions .btn { padding: .5rem .9rem; font-size: .7rem; }
+  /* 2ボタンは1行に横並び固定(折返し禁止・均等幅) */
+  .hero__actions { gap: .4rem; flex-wrap: nowrap; }
+  .hero__actions .btn { flex: 1 1 0; min-width: 0; padding: .5rem .3rem; font-size: .68rem; }
   .hero__cta { gap: .6rem; display: flex; }
+  /* 勉強部屋ボタンと下部のScroll表示のかぶり防止 */
+  .hero__inner { padding-bottom: 108px; }
   .btn-study { min-height: 56px; gap: .4rem; padding: .4rem .5rem; }
   .btn-study__img { width: 38px; height: 38px; box-shadow: 0 0 0 2px rgba(139,92,246,.3); }
   .btn-study__label {
