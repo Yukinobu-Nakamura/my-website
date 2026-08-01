@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 # 本番(さくらサーバー)アップロード用フォルダを git リポジトリの内容で最新化する。
 #   実行: bash deploy/make-release.sh
-# アップロード置き場は C:\Users\ghhrt\Downloads\sakura_upload\release に一本化。
+# アップロード置き場は sakura_upload\release に一本化(場所は下の BASE 参照。
+# 2026-08-01 の Downloads 整理で旧 C:\Users\ghhrt\Downloads から Google Drive へ移動)。
+# 置き場を動かした場合は SAKURA_UPLOAD_BASE 環境変数で上書きするか、BASE の既定値を更新する。
 # 更新履歴は同 sakura_upload\RELEASE_HISTORY.md に追記される。
 # ※ contact.php / note-feed.php はサーバー個別設定を含むため対象外(sakura_upload 直下で管理)
 set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
-BASE="/mnt/c/Users/ghhrt/Downloads/sakura_upload"
+BASE="${SAKURA_UPLOAD_BASE:-/mnt/g/マイドライブ/未分類_一時保管/Downloads整理_20260801/sakura_upload}"
 DEST="$BASE/release"
 HIST="$BASE/RELEASE_HISTORY.md"
 
