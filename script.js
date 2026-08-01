@@ -1,5 +1,5 @@
 /* =============================================
-   YUKINOBU NAKAMURA PORTFOLIO - script.js
+   中村幸信 公式サイト - script.js
    ============================================= */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     '.news__item, .numbers__item, .section-header'
   );
 
-  revealElements.forEach((el, i) => {
+  revealElements.forEach(el => {
     el.classList.add('reveal');
     // Stagger delay based on position within parent
     const siblings = Array.from(el.parentNode.children);
@@ -208,10 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
     return 'other';
   }
 
-  function stripHtml(html) {
+  // HTMLタグを除去し、連続空白を1つに畳んだ抜粋テキストを返す
+  function toExcerpt(html) {
     const div = document.createElement('div');
     div.innerHTML = html;
-    return div.textContent || div.innerText || '';
+    return (div.textContent || div.innerText || '').replace(/\s+/g, ' ').trim();
   }
 
   // RSS の XML テキストを記事オブジェクトの配列に変換
@@ -227,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return {
         title:  item.querySelector('title')?.textContent?.trim() || '無題',
         link:   item.querySelector('link')?.textContent?.trim() || '#',
-        desc:   stripHtml(item.querySelector('description')?.textContent || '').replace(/\s+/g, ' ').trim(),
+        desc:   toExcerpt(item.querySelector('description')?.textContent || ''),
         tags:   Array.from(item.querySelectorAll('category')).map(c => c.textContent.trim()),
         imgUrl: mediaThumb?.textContent?.trim()
           || item.querySelector('enclosure')?.getAttribute('url')
@@ -244,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return contents.map(c => ({
       title:  c.name || '無題',
       link:   c.noteUrl || `https://note.com/${NOTE_USERNAME}/n/${c.key || ''}`,
-      desc:   stripHtml(c.body || '').replace(/\s+/g, ' ').trim(),
+      desc:   toExcerpt(c.body || ''),
       tags:   (c.hashtags || [])
         .map(h => (h?.hashtag?.name ?? h?.name ?? '').replace(/^#/, ''))
         .filter(Boolean),
@@ -280,8 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 2) RSS(生XML)をプロキシ経由で(media:thumbnail はヘッダー画像あり記事のみ)
-    const xmlProxies = proxies;
-    for (const proxy of xmlProxies) {
+    for (const proxy of proxies) {
       try {
         const res = await fetch(proxy(rssUrl));
         if (!res.ok) continue;
@@ -298,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
           return data.items.map(it => ({
             title:  it.title || '無題',
             link:   it.link || '#',
-            desc:   stripHtml(it.description || '').replace(/\s+/g, ' ').trim(),
+            desc:   toExcerpt(it.description || ''),
             tags:   it.categories || [],
             imgUrl: it.thumbnail
               || it.enclosure?.link

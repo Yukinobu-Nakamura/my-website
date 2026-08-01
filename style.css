@@ -1,11 +1,10 @@
 /* =============================================
-   YUKINOBU NAKAMURA PORTFOLIO
+   中村幸信 公式サイト - style.css
    Color Theme: Purple Gradient
    ============================================= */
 
 /* ---------- CSS Variables ---------- */
 :root {
-  --purple-900: #4C1D95;
   --purple-800: #5B21B6;
   --purple-700: #6D28D9;
   --purple-600: #7C3AED;
@@ -18,7 +17,6 @@
 
   --dark:       #3B1A78;
   --dark-2:     #4C1D95;
-  --dark-3:     #5B21B6;
   --gray-700:   #374151;
   --gray-600:   #4b5563;
   --gray-500:   #6b7280;
@@ -248,20 +246,6 @@ input, textarea, select { font-family: inherit; }
   transform: translateY(-1px);
 }
 
-.logo-mark {
-  width: 36px;
-  height: 36px;
-  background: var(--gradient-main);
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-  font-weight: 900;
-  color: var(--white);
-  flex-shrink: 0;
-}
-
 .logo-text {
   font-size: 1.4rem;
   font-weight: 700;
@@ -289,6 +273,7 @@ input, textarea, select { font-family: inherit; }
 }
 .nav__link:hover {
   border-color: rgba(255,255,255,.7);
+  color: var(--white);
 }
 .nav__link::after {
   content: '';
@@ -301,7 +286,6 @@ input, textarea, select { font-family: inherit; }
   border-radius: var(--radius-full);
   transition: var(--transition);
 }
-.nav__link:hover { color: var(--white); }
 .nav__link:hover::after { width: 100%; }
 
 .nav__link--cta {
@@ -562,77 +546,6 @@ input, textarea, select { font-family: inherit; }
   50% { transform: translateY(-20px) scale(1.05); }
 }
 
-.hero__card {
-  position: relative;
-  z-index: 2;
-  background: rgba(255,255,255,.08);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,.15);
-  border-radius: var(--radius-xl);
-  padding: 2.5rem 3rem;
-  text-align: center;
-  box-shadow: 0 25px 60px rgba(0,0,0,.3);
-}
-
-.hero__card--profile {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 1.5rem 2rem;
-  text-align: left;
-}
-
-.hero__card-photo {
-  width: 180px;
-  height: 230px;
-  object-fit: cover;
-  object-position: top center;
-  border-radius: var(--radius-lg);
-  flex-shrink: 0;
-  box-shadow: 0 8px 24px rgba(0,0,0,.35);
-}
-
-.hero__card-caption {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.hero__card-caption-text {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--white);
-  line-height: 2.2;
-  font-family: var(--font-jp);
-  letter-spacing: .1em;
-}
-
-.hero__card-name {
-  font-size: 1.35rem;
-  font-weight: 900;
-  font-family: var(--font-jp);
-}
-
-.hero__card-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  background: var(--gradient-main);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.hero__card-text {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--white);
-  letter-spacing: .05em;
-}
-
 /* Hero Scroll */
 .hero__scroll {
   position: absolute;
@@ -756,13 +669,6 @@ input, textarea, select { font-family: inherit; }
   border-radius: var(--radius-xl);
 }
 
-.about__initials {
-  font-size: 6rem;
-  font-weight: 900;
-  color: rgba(255,255,255,.15);
-  letter-spacing: -.05em;
-}
-
 .about__image-placeholder--photo::before {
   display: none;
 }
@@ -812,22 +718,6 @@ input, textarea, select { font-family: inherit; }
   font-family: var(--font-jp);
 }
 
-.about__skills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .5rem;
-  margin-top: 1.5rem;
-}
-.skill-tag {
-  padding: .4rem 1rem;
-  background: var(--purple-100);
-  color: var(--purple-700);
-  border-radius: var(--radius-full);
-  font-size: .8rem;
-  font-weight: 600;
-  border: 1px solid var(--purple-200);
-}
-
 /* =============================================
    SERVICE
    ============================================= */
@@ -863,37 +753,10 @@ input, textarea, select { font-family: inherit; }
 }
 .service__card:hover::before { transform: scaleX(1); }
 
-.service__card--featured {
-  background: var(--gradient-dark);
-  border-color: transparent;
-  color: var(--white);
-}
-.service__card--featured .service__text { color: rgba(255,255,255,.75); }
-.service__card--featured .service__list li { color: rgba(255,255,255,.7); }
-.service__card--featured .service__list li::before { background: var(--purple-400); }
-.service__card--featured:hover { border-color: transparent; }
-
-.service__badge {
-  position: absolute;
-  top: 1.25rem;
-  right: 1.25rem;
-  background: var(--gradient-main);
-  color: var(--white);
-  padding: .2rem .75rem;
-  border-radius: var(--radius-full);
-  font-size: .7rem;
-  font-weight: 700;
-  letter-spacing: .05em;
-}
-
-.service__icon {
-  font-size: 2.5rem;
-  margin-bottom: 1.25rem;
-}
 .service__num {
   font-size: 3.5rem;
   font-weight: 900;
-  font-family: var(--font-en, 'Inter', sans-serif);
+  font-family: 'Inter', sans-serif;
   background: var(--gradient-main);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -909,8 +772,6 @@ input, textarea, select { font-family: inherit; }
   font-family: var(--font-jp);
   margin-bottom: .75rem;
 }
-.service__card--featured .service__title { color: var(--white); }
-
 .service__text {
   font-size: .92rem;
   color: var(--gray-600);
@@ -922,27 +783,6 @@ input, textarea, select { font-family: inherit; }
 /* Policy section overrides */
 #policy .service__title { font-size: 2.4rem; }
 #policy .service__text  { font-size: 1.196rem; }
-
-.service__list {
-  display: flex;
-  flex-direction: column;
-  gap: .5rem;
-}
-.service__list li {
-  font-size: .87rem;
-  color: var(--gray-500);
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-  font-family: var(--font-jp);
-}
-.service__list li::before {
-  content: '';
-  width: 6px; height: 6px;
-  background: var(--purple-500);
-  border-radius: 50%;
-  flex-shrink: 0;
-}
 
 /* =============================================
    WORKS
@@ -991,8 +831,6 @@ input, textarea, select { font-family: inherit; }
   box-shadow: var(--shadow-purple);
   border-color: var(--purple-200);
 }
-.works__card[style*="display: none"] { display: none !important; }
-
 .works__thumb {
   position: relative;
   aspect-ratio: 16/9;
@@ -1160,9 +998,9 @@ input, textarea, select { font-family: inherit; }
 }
 
 .support__card-title {
+  /* 色は body の --gray-700 を継承する(従来の var(--gray-900) は未定義で同じ挙動だった) */
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--gray-900);
   font-family: var(--font-jp);
 }
 
@@ -1172,36 +1010,6 @@ input, textarea, select { font-family: inherit; }
   line-height: 1.75;
   margin-bottom: 1.5rem;
   font-family: var(--font-jp);
-}
-
-.support__list {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1rem;
-  border: 1px solid var(--gray-200);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-}
-
-.support__list-item {
-  display: flex;
-  align-items: center;
-  padding: .75rem 1rem;
-  font-size: .875rem;
-  font-family: var(--font-jp);
-  border-bottom: 1px solid var(--gray-200);
-}
-.support__list-item:last-child { border-bottom: none; }
-
-.support__list-label {
-  color: var(--gray-500);
-  min-width: 100px;
-  font-weight: 500;
-}
-
-.support__list-value {
-  color: var(--gray-800);
-  font-weight: 600;
 }
 
 .support__note {
@@ -1225,6 +1033,7 @@ input, textarea, select { font-family: inherit; }
 
 .support__form .form-group { margin-bottom: 1rem; }
 .support__form .form-submit { text-align: center; margin-top: 1.25rem; }
+.support__donate-cta { margin: 1.5rem 0 1rem; }
 
 @media (max-width: 767px) {
   .support__grid { grid-template-columns: 1fr; }
@@ -1383,6 +1192,11 @@ input, textarea, select { font-family: inherit; }
   color: var(--white);
   transform: translateY(-2px);
 }
+
+/* SNSブランドカラー(ヘッダー/フッター共用)。
+   hover時も背景色を維持するため .social-btn:hover より後に定義する */
+.sns--x, .sns--x:hover   { background: #000;    border-color: #000; }
+.sns--yt, .sns--yt:hover { background: #FF0000; border-color: #FF0000; }
 
 .footer__nav {
   display: flex;
@@ -1571,7 +1385,8 @@ input, textarea, select { font-family: inherit; }
     gap: .75rem;
     height: auto;
     padding-top: 84px;
-    padding-bottom: 90px;
+    /* 下余白は勉強部屋ボタンと下部Scroll表示のかぶり防止分を含む */
+    padding-bottom: 108px;
     align-items: center;
   }
   .hero__content { margin-top: 0; }
@@ -1585,8 +1400,6 @@ input, textarea, select { font-family: inherit; }
   .hero__actions { gap: .4rem; flex-wrap: nowrap; }
   .hero__actions .btn { flex: 1 1 0; min-width: 0; padding: .5rem .3rem; font-size: .68rem; }
   .hero__cta { gap: .6rem; display: flex; }
-  /* 勉強部屋ボタンと下部のScroll表示のかぶり防止 */
-  .hero__inner { padding-bottom: 108px; }
   .btn-study { min-height: 56px; gap: .4rem; padding: .4rem .5rem; }
   .btn-study__img { width: 38px; height: 38px; box-shadow: 0 0 0 2px rgba(139,92,246,.3); }
   .btn-study__label {
@@ -1639,150 +1452,4 @@ input, textarea, select { font-family: inherit; }
 @media (max-width: 480px) {
   .btn { padding: .75rem 1.5rem; font-size: .875rem; }
   .numbers__inner { grid-template-columns: 1fr 1fr; }
-}
-
-/* =============================================
-   PRIVACY POLICY PAGE
-   ============================================= */
-
-.privacy-hero {
-  padding: 9rem 0 4rem;
-  background: linear-gradient(135deg, var(--bg-dark) 0%, #1a0f2e 100%);
-  border-bottom: 1px solid rgba(255,255,255,.06);
-}
-.privacy-hero__label {
-  font-size: .75rem;
-  font-weight: 500;
-  letter-spacing: .15em;
-  text-transform: uppercase;
-  color: var(--purple-300);
-  margin-bottom: .75rem;
-}
-.privacy-hero__title {
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: .75rem;
-}
-.privacy-hero__date {
-  font-size: .85rem;
-  color: rgba(255,255,255,.4);
-}
-
-.privacy-main {
-  padding: 5rem 0 6rem;
-  background: var(--bg-dark);
-}
-.privacy-content {
-  max-width: 760px;
-}
-.privacy-intro {
-  font-size: 1rem;
-  line-height: 1.9;
-  color: rgba(255,255,255,.7);
-  margin-bottom: 3.5rem;
-  padding-bottom: 2.5rem;
-  border-bottom: 1px solid rgba(255,255,255,.07);
-}
-
-.privacy-section {
-  margin-bottom: 3rem;
-  padding-bottom: 3rem;
-  border-bottom: 1px solid rgba(255,255,255,.07);
-}
-.privacy-section:last-child {
-  border-bottom: none;
-  margin-bottom: 0;
-  padding-bottom: 0;
-}
-.privacy-section__heading {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: #fff;
-  margin-bottom: 1.25rem;
-}
-.privacy-section__num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  background: var(--purple-500);
-  font-size: .85rem;
-  font-weight: 700;
-  color: #fff;
-  flex-shrink: 0;
-}
-.privacy-section__body {
-  font-size: .95rem;
-  line-height: 1.9;
-  color: rgba(255,255,255,.65);
-  margin-bottom: 1rem;
-}
-.privacy-section__body:last-child { margin-bottom: 0; }
-
-.privacy-list {
-  list-style: none;
-  padding: 0;
-  margin: .75rem 0 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: .6rem;
-}
-.privacy-list li {
-  display: flex;
-  align-items: flex-start;
-  gap: .75rem;
-  font-size: .95rem;
-  line-height: 1.75;
-  color: rgba(255,255,255,.65);
-}
-.privacy-list li::before {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--purple-400);
-  flex-shrink: 0;
-  margin-top: .6rem;
-}
-
-.privacy-contact-box {
-  margin-top: 1.5rem;
-  padding: 1.75rem 2rem;
-  border: 1px solid rgba(139,92,246,.3);
-  border-radius: 12px;
-  background: rgba(139,92,246,.06);
-}
-.privacy-contact-box__name {
-  font-size: .75rem;
-  font-weight: 600;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--purple-300);
-  margin-bottom: .5rem;
-}
-.privacy-contact-box__org {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #fff;
-  margin-bottom: .5rem;
-}
-.privacy-contact-box__email {
-  font-size: .95rem;
-  color: var(--purple-300);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.privacy-contact-box__email:hover { color: var(--purple-200); }
-
-@media (max-width: 768px) {
-  .privacy-hero { padding: 7rem 0 3rem; }
-  .privacy-section__heading { font-size: 1.05rem; }
-  .privacy-contact-box { padding: 1.25rem 1.25rem; }
 }
