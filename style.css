@@ -1387,8 +1387,9 @@ input, textarea, select { font-family: inherit; }
     gap: 0;
     height: auto;
     padding-top: 84px;
-    /* 下余白: 写真の下端フェードをhero下端に届かせつつ勉強部屋ボタンとの間を取る */
-    padding-bottom: 96px;
+    /* 下余白は最小限: 写真の下端(=hero下端)を勉強部屋カードの下端とほぼ揃え、
+       実績バーを上に引き上げる */
+    padding-bottom: 20px;
     align-items: start;
   }
   .hero__content { margin-top: 0; position: relative; z-index: 2; max-width: 60%; }
@@ -1415,6 +1416,8 @@ input, textarea, select { font-family: inherit; }
   .btn-study__arrow { width: 20px; height: 20px; font-size: .75rem; }
   .hero__visual { position: static; }
   .hero__visual .orb { display: none; }
+  /* heroを詰めたためSCROLL表示は写真・カードと重なる→携帯では非表示 */
+  .hero__scroll { display: none; }
   /* 写真: hero右下アンカー。右端フェードを少し画面外に逃がし人物を右寄せで見せる */
   .hero__figure {
     position: absolute;
