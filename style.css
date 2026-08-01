@@ -1418,7 +1418,7 @@ input, textarea, select { font-family: inherit; }
   /* 写真: hero右下アンカー。右端フェードを少し画面外に逃がし人物を右寄せで見せる */
   .hero__figure {
     position: absolute;
-    right: -6vw;
+    right: -10vw;
     bottom: 0;
     margin: 0;
     z-index: 1;
