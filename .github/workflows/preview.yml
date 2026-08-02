@@ -37,7 +37,7 @@ jobs:
           mkdir -p docs
           cp style.css script.js docs/
           cp -r assets docs/
-          staticrypt index.html 404.html privacy-policy.html \
+          staticrypt index.html 404.html privacy-policy.html benkyobeya.html benkyobeya_hp_kouza.html \
             -p "cpaataru10969" \
             -d docs \
             --short \

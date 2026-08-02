@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="勉強部屋 第1回: ホームページの仕組み講座。ドメイン・サーバー・SSLなどの正体を「家を建てる」の例えで解説します。" />
+  <meta name="robots" content="noindex" />
+  <title>ホームページの仕組み講座 | 勉強部屋 | 中村幸信公式ホームページ</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="assets/img/favicon.png" type="image/png" sizes="96x96" />
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+
+  <link rel="stylesheet" href="style.css?v=20260802c" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* このページ専用のスタイル */
+    .kouza-hero {
+      background: var(--gradient-hero);
+      color: var(--white, #fff);
+      padding: 56px 24px 40px;
+      text-align: center;
+      font-family: var(--font-jp);
+    }
+    .kouza-hero__label {
+      display: inline-block;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      background: rgba(255,255,255,.2);
+      border: 1px solid rgba(255,255,255,.4);
+      border-radius: 99px;
+      padding: 3px 16px;
+      margin-bottom: 14px;
+    }
+    .kouza-hero h1 {
+      font-size: clamp(1.4rem, 4.5vw, 2rem);
+      font-weight: 700;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    .kouza-hero p { font-size: .9rem; opacity: .9; }
+
+    .kouza-body {
+      font-family: var(--font-jp);
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 36px 20px 60px;
+      color: #1f2430;
+      line-height: 1.95;
+      font-size: .95rem;
+    }
+    .kouza-body h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--purple-800, #3b1a78);
+      border-left: 5px solid var(--purple-800, #3b1a78);
+      padding-left: 12px;
+      margin: 44px 0 14px;
+      line-height: 1.5;
+    }
+    .kouza-body h2:first-child { margin-top: 0; }
+    .kouza-body h3 {
+      font-size: 1.02rem;
+      font-weight: 700;
+      margin: 26px 0 8px;
+    }
+    .kouza-body p { margin-bottom: 12px; }
+    .kouza-body ul, .kouza-body ol { padding-left: 24px; margin-bottom: 12px; }
+    .kouza-body li { margin-bottom: 6px; }
+
+    .kouza-table-wrap { overflow-x: auto; margin: 14px 0 6px; }
+    .kouza-table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 560px;
+      font-size: .85rem;
+      line-height: 1.6;
+    }
+    .kouza-table th, .kouza-table td {
+      border: 1px solid #d9dce6;
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .kouza-table th {
+      background: #f1edfa;
+      color: var(--purple-800, #3b1a78);
+      white-space: nowrap;
+    }
+    .kouza-point {
+      background: #f6f3fd;
+      border: 1.5px solid var(--purple-800, #3b1a78);
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: .92rem;
+    }
+    .kouza-point b { color: var(--purple-800, #3b1a78); }
+    .kouza-qa {
+      border: 1px solid #e2e5ee;
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin-bottom: 12px;
+      background: #fafbfe;
+    }
+    .kouza-qa .q {
+      font-weight: 700;
+      color: var(--purple-800, #3b1a78);
+      margin-bottom: 6px;
+    }
+    .kouza-qa .q::before { content: "Q. "; }
+    .kouza-qa .a { margin-bottom: 0; }
+    .kouza-qa .a::before { content: "A. "; font-weight: 700; color: #6b7280; }
+    dl.kouza-dict dt {
+      font-weight: 700;
+      color: var(--purple-800, #3b1a78);
+      margin-top: 12px;
+    }
+    dl.kouza-dict dd { margin-left: 0; }
+    .kouza-note {
+      font-size: .8rem;
+      color: #6b7280;
+      border-top: 1px solid #e2e5ee;
+      margin-top: 40px;
+      padding-top: 16px;
+    }
+    .kouza-back {
+      text-align: center;
+      margin-top: 32px;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .kouza-back .btn--kouza {
+      background: var(--purple-800, #3b1a78);
+      color: #fff;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="kouza-hero">
+    <span class="kouza-hero__label">勉強部屋 第1回</span>
+    <h1>ホームページの仕組み講座<br />——「家を建てる」に例えると全部わかる</h1>
+    <p>読了目安10分 | ドメイン・サーバー・SSL…聞き慣れない言葉の正体と、費用の構造</p>
+  </header>
+
+  <main class="kouza-body">
+    <h2>この講座で学べること</h2>
+    <p>「ホームページを作りたい(作ってもらいたい)けれど、何が必要で、何にお金がかかるのか分からない」——この講座は、そんな方のためのものです。</p>
+    <p>実は、ホームページに必要なものは10個ほどしかありません。しかもすべて<b>「家を建てる」に例えられます</b>。この例えを一度頭に入れると、業者さんの見積もりも、レンタルサーバーの広告も、ぐっと読めるようになります。</p>
+
+    <h2>1. 全体像 —— ホームページは「家」でできている</h2>
+    <div class="kouza-table-wrap">
+      <table class="kouza-table">
+        <tr><th>要素</th><th>例えると</th><th>費用の目安</th><th>役割</th></tr>
+        <tr><td><b>ドメイン</b><br />(○○.jp など)</td><td>住所</td><td>年数千円</td><td>ネット上の「ここにいます」。これがないと誰もたどり着けない</td></tr>
+        <tr><td><b>サーバー</b></td><td>土地</td><td>月数百円</td><td>ファイルを24時間置いておく場所。レンタルで十分</td></tr>
+        <tr><td><b>HTML / CSS / JavaScript</b></td><td>建物本体</td><td>制作費の大半</td><td>ページそのもの。HTML=骨組みと文章、CSS=内装デザイン、JavaScript=動く仕掛け</td></tr>
+        <tr><td><b>FTP</b>(転送ソフト)</td><td>引っ越しトラック</td><td>無料</td><td>作ったファイルをサーバーへ運ぶ。実態はドラッグ&ドロップ</td></tr>
+        <tr><td><b>テスト環境</b></td><td>モデルルーム</td><td>無料</td><td>公開前に仕上がりを確認する場所。工事中の姿を見せないため</td></tr>
+        <tr><td><b>SSL</b>(httpsの鍵マーク)</td><td>玄関の鍵</td><td>無料</td><td>ないとブラウザが「保護されていない通信」と警告する</td></tr>
+        <tr><td><b>お問い合わせフォーム</b></td><td>郵便受け</td><td>無料</td><td>アドレス直載せは迷惑メールの的になるため、フォームを挟む</td></tr>
+        <tr><td><b>ブログ連携</b></td><td>掲示板の自動更新</td><td>無料</td><td>「最終更新が1年前」を防ぐ。外部ブログの記事を自動で取り込む</td></tr>
+        <tr><td><b>検索エンジン登録</b></td><td>地図への登録</td><td>無料</td><td>Googleに「このサイトの持ち主です」と届け出る作業</td></tr>
+        <tr><td><b>プライバシーポリシー等</b></td><td>建築確認</td><td>—</td><td>フォームで個人情報を預かるなら必須のルール整備</td></tr>
+      </table>
+    </div>
+    <div class="kouza-point">
+      <b>ポイント:</b> 固定費として毎年かかるのは<b>「住所(ドメイン)」と「土地(サーバー)」の年1万円前後だけ</b>。制作費の大部分は「建物を建てる人件費」です。ここの構造を知っているかどうかで、見積もりの見え方が変わります。
+    </div>
+
+    <h2>2. よくある疑問 Q&A</h2>
+
+    <div class="kouza-qa">
+      <p class="q">ドメインは無料でも取れるって聞いたけど?</p>
+      <p class="a">取れます。ただし無料には2種類あります。①「間借り」型(サービス名が入ったサブドメイン。住所でいうと「〇〇ビル内 △△様方」で、サービス側の都合に左右される)、②「セット込み」型(サーバー契約とセットで実質サーバー代に込み)。途中で独自ドメインに引っ越すと、検索での評価も、QRコード入りの印刷物も作り直しになります。長く使うサイトなら、<b>最初から自分名義の独自ドメイン</b>が結果的に一番安くつきます。</p>
+    </div>
+    <div class="kouza-qa">
+      <p class="q">ドメインで一番気をつけることは?</p>
+      <p class="a"><b>名義</b>です。制作を外注する場合でも、ドメインは必ず自分(自団体)名義で取得すること。業者名義で取られると「住所が他人の名義」になり、業者を変えるときにサイトごと動かせなくなります。</p>
+    </div>
+    <div class="kouza-qa">
+      <p class="q">高性能なサーバーが必要と言われたら?</p>
+      <p class="a">文章と写真が中心のサイトは、月数百円のレンタルサーバーで十分です。アクセスが集中してもまず落ちません。動画をサイト上で直接配信するなど特殊な用途がない限り、高性能プランは不要です。</p>
+    </div>
+    <div class="kouza-qa">
+      <p class="q">FTPとかPHPとか、覚えないとダメ?</p>
+      <p class="a">名前は覚えなくて大丈夫です。FTPは「ファイルをサーバーに運ぶときの共通ルール」(郵便制度のようなもの)で、実際の操作は無料ソフトのドラッグ&ドロップです。PHPは「サーバー側で動く裏方のプログラム」で、フォームから届いた内容をメールで送る、といった仕事をします。<b>見た目のファイル(HTML等)は閲覧者の手元で動き、裏方(PHP)はサーバーの中で動く</b>——この役割分担だけ知っていれば十分です。</p>
+    </div>
+    <div class="kouza-qa">
+      <p class="q">今はAIでホームページが作れるって本当?</p>
+      <p class="a">本当です。「建物本体」にあたるHTML/CSS/JavaScriptは、AIに日本語で指示すれば書けるようになりました。「トップに写真を置いて名前を大きく」「スマホで写真が見切れるので直して」——この程度の指示で形になります。このサイト自体も、その方法で作られています。</p>
+    </div>
+
+    <h2>3. AIで作るときの心得 —— AIは大工、自分は施主</h2>
+    <p>ただし「全部お任せ」ではありません。施主は設計図が読めなくてもいい代わりに、<b>完成した家に自分で住んでみて確かめる責任</b>があります。具体的には3つです。</p>
+    <ol>
+      <li><b>中身の正しさは自分の目で確認する。</b>コードの間違いは表示が崩れるのですぐ気づけますが、文章や数字の間違いは<b>正常に表示されてしまう</b>ため発見が遅れます。経歴・実績・連絡先は必ず自分で読む。</li>
+      <li><b>法律・ルールに関わる記載は一次情報で裏を取る。</b>個人情報の扱い、業種ごとの表示義務などは、AIの出力を鵜呑みにせず公的機関の資料で確認する。</li>
+      <li><b>検証は「使ってみる」でできる。</b>スマホで全ページを開く、フォームから自分でテスト送信してみる、自分の名前で検索してみる。コードが読めなくてもできる品質チェックです。</li>
+    </ol>
+
+    <h2>4. 用語ミニ辞典</h2>
+    <dl class="kouza-dict">
+      <dt>ドメイン</dt>
+      <dd>ネット上の住所(例: nakamura-yukinobu.jp)。年単位で借りる。名義は必ず自分に。</dd>
+      <dt>サーバー</dt>
+      <dd>ホームページのファイルを24時間置いておくコンピューター。土地にあたる。月数百円から借りられる。</dd>
+      <dt>HTML / CSS / JavaScript</dt>
+      <dd>ページの骨組みと文章 / 内装デザイン / 動く仕掛け。3点セットで「建物本体」。</dd>
+      <dt>FTP</dt>
+      <dd>File Transfer Protocol。ファイルをサーバーへ運ぶための共通ルール。専用の無料ソフトで操作する。</dd>
+      <dt>PHP</dt>
+      <dd>サーバーの中で動くプログラミング言語。フォームのメール送信などの「裏方」を担当。</dd>
+      <dt>SSL / https</dt>
+      <dd>通信を暗号化する仕組み。アドレスバーの鍵マーク。今は無料で設定でき、事実上の必須。</dd>
+      <dt>SEO</dt>
+      <dd>検索エンジン最適化。まずは「Googleにサイトの存在を届け出る」ことから始まる。</dd>
+    </dl>
+
+    <h2>おわりに</h2>
+    <p>まとめると——<b>ホームページの固定費は年1万円前後。残りは「建てる人件費」で、その多くは今、AIで置き換えられる。ただし中身の確認・法律・使って検証の3つは人間の仕事</b>。この構造を知っていれば、自作するにも、外注するにも、納得して判断できるはずです。</p>
+    <p>このサイトを実際にAIと一緒に作ったときの体験談(つまずいた事件簿つき)は、ブログでも公開していきます。トップページのブログ欄からどうぞ。</p>
+
+    <p class="kouza-note">※本講座は一般的な情報提供です。料金・仕様は各サービスの最新情報をご確認ください。(2026年8月時点の内容)</p>
+
+    <div class="kouza-back">
+      <a href="benkyobeya.html" class="btn btn--kouza">勉強部屋に戻る</a>
+      <a href="./" class="btn btn--home">ホームページに戻る</a>
+    </div>
+  </main>
+
+</body>
+</html>

@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="中村幸信の勉強部屋。現在開発中です。" />
+  <meta name="description" content="中村幸信の勉強部屋。政治やお金のことを一緒に学べるコンテンツ集。" />
   <meta name="robots" content="noindex" />
-  <title>勉強部屋(準備中)| 中村幸信公式ホームページ</title>
+  <title>勉強部屋 | 中村幸信公式ホームページ</title>
 
   <!-- Favicon -->
   <link rel="icon" href="assets/img/favicon.png" type="image/png" sizes="96x96" />
@@ -24,12 +24,12 @@
       align-items: center;
       justify-content: center;
       background: var(--gradient-hero);
-      padding: 24px;
+      padding: 40px 24px;
       font-family: var(--font-jp);
     }
     .study-card {
       text-align: center;
-      max-width: 560px;
+      max-width: 640px;
       width: 100%;
       background: rgba(255,255,255,.08);
       border: 1px solid rgba(255,255,255,.25);
@@ -39,11 +39,11 @@
       box-shadow: 0 20px 60px rgba(59,26,120,.4);
     }
     .study-card__img {
-      width: 160px;
-      height: 160px;
+      width: 140px;
+      height: 140px;
       border-radius: 50%;
       object-fit: cover;
-      margin: 0 auto 1.5rem;
+      margin: 0 auto 1.25rem;
       box-shadow: 0 10px 30px rgba(59,26,120,.35), 0 0 0 6px rgba(255,255,255,.6);
     }
     .study-card__title {
@@ -51,19 +51,64 @@
       font-size: clamp(1.4rem, 5vw, 1.9rem);
       font-weight: 700;
       letter-spacing: .06em;
-      margin-bottom: 1rem;
+      margin-bottom: .5rem;
     }
     .study-card__text {
       color: rgba(255,255,255,.9);
-      font-size: 1rem;
-      line-height: 2;
-      margin-bottom: 2rem;
+      font-size: .95rem;
+      line-height: 1.9;
+      margin-bottom: 1.75rem;
     }
-    .study-card__text strong {
+    .study-list {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 1.75rem;
+      text-align: left;
+    }
+    .study-item {
       display: block;
-      font-size: 1.15rem;
+      background: rgba(255,255,255,.95);
+      border-radius: 16px;
+      padding: 1.1rem 1.3rem;
+      text-decoration: none;
+      color: var(--purple-800, #3b1a78);
+      box-shadow: 0 10px 30px rgba(59,26,120,.3);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .study-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 44px rgba(59,26,120,.45);
+    }
+    .study-item__label {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      color: #fff;
+      background: var(--purple-800, #3b1a78);
+      border-radius: 99px;
+      padding: 2px 12px;
+      margin-bottom: .4rem;
+    }
+    .study-item__title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.6;
       margin-bottom: .25rem;
     }
+    .study-item__meta {
+      font-size: .8rem;
+      color: #6b7280;
+    }
+    .study-item--soon {
+      background: rgba(255,255,255,.14);
+      color: rgba(255,255,255,.85);
+      box-shadow: none;
+      border: 1px dashed rgba(255,255,255,.4);
+    }
+    .study-item--soon:hover { transform: none; box-shadow: none; }
+    .study-item--soon .study-item__label { background: rgba(255,255,255,.25); }
+    .study-item--soon .study-item__meta { color: rgba(255,255,255,.65); }
     .study-card .btn--home {
       background: var(--white);
       color: var(--purple-800);
@@ -83,10 +128,23 @@
       <img src="assets/img/nakamura_illust.png" alt="中村幸信のイラスト" class="study-card__img" width="512" height="512" />
       <h1 class="study-card__title">中村幸信の勉強部屋</h1>
       <p class="study-card__text">
-        <strong>現在開発中です。</strong>
-        政治やお金のことを一緒に学べるコンテンツを準備しています。<br />
-        公開までもう少しお待ちください。お楽しみに!
+        政治やお金のことを、一緒に学べるコンテンツ集です。<br />
+        少しずつ増やしていきます。
       </p>
+
+      <div class="study-list">
+        <a href="benkyobeya_hp_kouza.html" class="study-item">
+          <span class="study-item__label">第1回</span>
+          <div class="study-item__title">ホームページの仕組み講座<br />——「家を建てる」に例えると全部わかる</div>
+          <div class="study-item__meta">📖 読了目安10分 | ドメイン・サーバー・SSL…の正体と費用の構造</div>
+        </a>
+        <div class="study-item study-item--soon">
+          <span class="study-item__label">準備中</span>
+          <div class="study-item__title">次のコンテンツを準備しています</div>
+          <div class="study-item__meta">政治とお金の仕組みなど、リクエストもお問い合わせフォームからどうぞ</div>
+        </div>
+      </div>
+
       <a href="./" class="btn btn--home">ホームページに戻る</a>
     </section>
   </main>
