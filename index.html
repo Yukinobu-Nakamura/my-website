@@ -308,6 +308,11 @@
           </p>
           <form class="support__form" id="volunteerForm" action="https://nakamura-yukinobu.jp/contact.php" method="POST">
             <input type="hidden" name="type" value="volunteer" />
+            <!-- スパム対策(honeypot): 人間には見えない罠フィールド。入力があった送信はボットとして破棄される -->
+            <div style="position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;" aria-hidden="true">
+              <label for="vol-website">Website</label>
+              <input type="text" id="vol-website" name="website" tabindex="-1" autocomplete="off" />
+            </div>
             <div class="form-group">
               <label for="vol-name">お名前 <span class="required">*</span></label>
               <input type="text" id="vol-name" name="vol_name" placeholder="山田 太郎" required />
@@ -350,6 +355,11 @@
       </div>
       <div class="contact__wrap">
         <form class="contact__form" id="contactForm" action="https://nakamura-yukinobu.jp/contact.php" method="POST">
+          <!-- スパム対策(honeypot): 人間には見えない罠フィールド。入力があった送信はボットとして破棄される -->
+          <div style="position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;" aria-hidden="true">
+            <label for="website">Website</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+          </div>
           <div class="form-row">
             <div class="form-group">
               <label for="name">お名前 <span class="required">*</span></label>

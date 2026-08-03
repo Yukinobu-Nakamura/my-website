@@ -72,6 +72,30 @@ $privacy = isset($_POST['privacy']);
 // メールヘッダインジェクション対策(Reply-To 等に使う値の改行を明示除去)
 $email = str_replace(["\r", "\n", "%0a", "%0d"], '', $email);
 
+// ---- スパム対策 ----
+// (1) honeypot: フォームの不可視フィールド(website)。人間には見えないため常に空。
+//     ボットは機械的に全欄を埋めるので、値が入っていたらスパムと判定する。
+//     ボットに対策を悟らせないため、送信せずに成功レスポンスだけ返す(サイレント破棄)。
+$honeypot = trim($_POST['website'] ?? '');
+if ($honeypot !== '') {
+    echo json_encode(['success' => true, 'message' => '送信を受け付けました。']);
+    exit;
+}
+
+// (2) 日本語チェック: 名前・内容のいずれにも日本語(ひらがな/カタカナ/漢字)が
+//     1文字も含まれない送信は拒否する。現在届いているスパムは全て英数字の羅列のため
+//     これで遮断できる。正当な利用者にはエラーメッセージで日本語の記入を案内する。
+$jpPattern = '/[\x{3040}-\x{30FF}\x{3400}-\x{9FFF}\x{FF66}-\x{FF9D}ー]/u';
+if (!preg_match($jpPattern, $name . $message)) {
+    http_response_code(422);
+    echo json_encode([
+        'success' => false,
+        'errors'  => ['お名前またはご記入内容に日本語を含めてください。(スパム対策のため) / Please include Japanese text in your name or message (anti-spam measure).'],
+    ]);
+    exit;
+}
+// (3) 自動返信は上記チェックを通過した送信のみに行われる(スパムはここまでに exit 済み)。
+
 // ---- バリデーション ----
 $errors = [];
 if (empty($name))                        $errors[] = 'お名前は必須です。';
