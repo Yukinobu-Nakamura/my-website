@@ -121,6 +121,82 @@
       margin-top: 12px;
     }
     dl.kouza-dict dd { margin-left: 0; }
+    .kouza-figure {
+      margin: 18px 0;
+      text-align: center;
+    }
+    .kouza-figure svg {
+      max-width: 100%;
+      height: auto;
+    }
+    .kouza-figure figcaption {
+      font-size: .8rem;
+      color: #6b7280;
+      margin-top: 6px;
+    }
+    .kouza-steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 14px 0;
+      counter-reset: step;
+    }
+    .kouza-step {
+      flex: 1 1 210px;
+      background: #fafbfe;
+      border: 1px solid #e2e5ee;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: .88rem;
+      position: relative;
+    }
+    .kouza-step::before {
+      counter-increment: step;
+      content: counter(step);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--purple-800, #3b1a78);
+      color: #fff;
+      font-weight: 700;
+      font-size: .85rem;
+      margin-right: 8px;
+    }
+    .kouza-step b { color: var(--purple-800, #3b1a78); }
+    .kouza-flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: stretch;
+      gap: 6px;
+      margin: 12px 0;
+      font-size: .82rem;
+    }
+    .kouza-flow .fbox {
+      flex: 1 1 120px;
+      border-radius: 12px;
+      padding: 10px 12px;
+      text-align: center;
+      border: 1.5px solid #d9dce6;
+      background: #fff;
+    }
+    .kouza-flow .fbox.bad  { border-color: #dc2626; background: #fef2f2; }
+    .kouza-flow .fbox.good { border-color: #059669; background: #ecfdf5; }
+    .kouza-flow .farrow {
+      align-self: center;
+      color: #9ca3af;
+      font-weight: 700;
+    }
+    .kouza-callout {
+      background: #fdf2f8;
+      border: 1.5px dashed #be185d;
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: .92rem;
+    }
+    .kouza-callout b { color: #be185d; }
     .kouza-prompt pre {
       background: #f6f3fd;
       border: 1.5px solid var(--purple-800, #3b1a78);
@@ -163,11 +239,11 @@
   </header>
 
   <main class="kouza-body">
-    <h2>この講座で学べること</h2>
+    <h2>🎯 この講座で学べること</h2>
     <p>「ホームページを作りたい(作ってもらいたい)けれど、何が必要で、何にお金がかかるのか分からない」——この講座は、そんな方のためのものです。</p>
     <p>実は、ホームページに必要なものは12個ほどしかありません。しかもすべて<b>「家を建てる」に例えられます</b>。この例えを一度頭に入れると、業者さんの見積もりも、レンタルサーバーの広告も、ぐっと読めるようになります。</p>
 
-    <h2>1. 自分で作る? 外注する? —— メリット・デメリット</h2>
+    <h2>⚖️ 1. 自分で作る? 外注する? —— メリット・デメリット</h2>
     <p>最初に、自分で作る場合の損得を整理しておきます。</p>
     <h3>自分で作るメリット</h3>
     <ol>
@@ -182,7 +258,56 @@
       <li><b>トラブル対応も自分。</b>ただしそれもAIと一緒なら乗り切れます(第3章のQ&A「スパム」参照)。</li>
     </ol>
 
-    <h2>2. 全体像 —— ホームページは「家」でできている</h2>
+    <h2>🏠 2. 全体像 —— ホームページは「家」でできている</h2>
+    <p>まずは1枚の絵で全体を掴んでください。ホームページは、こんな「家」です。</p>
+    <figure class="kouza-figure">
+      <svg viewBox="0 0 780 400" role="img" aria-label="ホームページを家に例えた図。土地がサーバー、建物がHTML/CSS/JavaScript、表札がドメイン、玄関の鍵がSSL、郵便受けがお問い合わせフォーム、金庫が2段階認証、トラックがFTP、地図ピンが検索エンジン登録を表す">
+        <!-- 土地(サーバー) -->
+        <rect x="40" y="330" width="700" height="46" rx="8" fill="#e9e4f6" stroke="#7c5cbf" stroke-width="2"/>
+        <text x="390" y="359" text-anchor="middle" font-size="16" font-weight="bold" fill="#3b1a78">サーバー = 土地(月数百円)</text>
+        <!-- 家本体(HTML/CSS/JS) -->
+        <polygon points="268,175 390,92 512,175" fill="#7c5cbf"/>
+        <rect x="280" y="175" width="220" height="155" fill="#ffffff" stroke="#3b1a78" stroke-width="3"/>
+        <text x="390" y="205" text-anchor="middle" font-size="15" font-weight="bold" fill="#1f2430">HTML/CSS/JS</text>
+        <text x="390" y="224" text-anchor="middle" font-size="13" fill="#6b7280">= 建物本体</text>
+        <!-- ドア+鍵(SSL) -->
+        <rect x="358" y="248" width="62" height="82" fill="#f6f3fd" stroke="#3b1a78" stroke-width="2"/>
+        <circle cx="410" cy="290" r="5" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/>
+        <text x="428" y="262" font-size="13" font-weight="bold" fill="#1f2430">玄関の鍵</text>
+        <text x="428" y="278" font-size="12" fill="#6b7280">= SSL/HSTS</text>
+        <!-- 金庫(2段階認証) -->
+        <rect x="296" y="284" width="42" height="46" rx="4" fill="#d9d3ec" stroke="#3b1a78" stroke-width="2"/>
+        <circle cx="317" cy="307" r="7" fill="none" stroke="#3b1a78" stroke-width="2"/>
+        <text x="252" y="300" text-anchor="end" font-size="13" font-weight="bold" fill="#1f2430">金庫</text>
+        <text x="252" y="316" text-anchor="end" font-size="12" fill="#6b7280">= 2段階認証</text>
+        <!-- 表札(ドメイン) -->
+        <rect x="196" y="180" width="66" height="30" rx="4" fill="#fff" stroke="#3b1a78" stroke-width="2"/>
+        <text x="229" y="200" text-anchor="middle" font-size="12" font-weight="bold" fill="#3b1a78">○○.jp</text>
+        <text x="229" y="164" text-anchor="middle" font-size="13" font-weight="bold" fill="#1f2430">表札 = ドメイン(年数千円)</text>
+        <line x1="229" y1="210" x2="229" y2="330" stroke="#7c5cbf" stroke-width="2"/>
+        <!-- 郵便受け(フォーム+防犯) -->
+        <rect x="540" y="272" width="52" height="34" rx="6" fill="#fff" stroke="#3b1a78" stroke-width="2"/>
+        <line x1="566" y1="306" x2="566" y2="330" stroke="#3b1a78" stroke-width="3"/>
+        <text x="566" y="294" text-anchor="middle" font-size="14">🛡</text>
+        <text x="566" y="248" text-anchor="middle" font-size="13" font-weight="bold" fill="#1f2430">郵便受け = フォーム</text>
+        <text x="566" y="264" text-anchor="middle" font-size="12" fill="#6b7280">(防犯=スパム対策つき)</text>
+        <!-- トラック(FTP) -->
+        <rect x="66" y="286" width="88" height="34" rx="5" fill="#fff" stroke="#3b1a78" stroke-width="2"/>
+        <rect x="154" y="298" width="30" height="22" rx="4" fill="#fff" stroke="#3b1a78" stroke-width="2"/>
+        <circle cx="92" cy="326" r="9" fill="#d9d3ec" stroke="#3b1a78" stroke-width="2"/>
+        <circle cx="140" cy="326" r="9" fill="#d9d3ec" stroke="#3b1a78" stroke-width="2"/>
+        <circle cx="172" cy="326" r="9" fill="#d9d3ec" stroke="#3b1a78" stroke-width="2"/>
+        <text x="124" y="272" text-anchor="middle" font-size="13" font-weight="bold" fill="#1f2430">FTP = 引っ越しトラック</text>
+        <text x="110" y="309" text-anchor="middle" font-size="12" fill="#6b7280">ファイル</text>
+        <!-- 地図ピン(検索エンジン) -->
+        <circle cx="672" cy="120" r="17" fill="#7c5cbf"/>
+        <polygon points="660,131 684,131 672,158" fill="#7c5cbf"/>
+        <circle cx="672" cy="120" r="7" fill="#fff"/>
+        <text x="672" y="182" text-anchor="middle" font-size="13" font-weight="bold" fill="#1f2430">地図 = 検索エンジン</text>
+        <text x="672" y="198" text-anchor="middle" font-size="12" fill="#6b7280">(Googleへの届け出)</text>
+      </svg>
+      <figcaption>図: ホームページ=家の対応図。このほか「モデルルーム(テスト環境)」「郵便の身分証明(SPF/DKIM/DMARC)」「建築確認(プライバシーポリシー等)」という"見えない設備"があります(下の表参照)。</figcaption>
+    </figure>
     <div class="kouza-table-wrap">
       <table class="kouza-table">
         <tr><th>要素</th><th>例えると</th><th>費用の目安</th><th>役割</th></tr>
@@ -204,7 +329,21 @@
       <b>ポイント:</b> 固定費として毎年かかるのは<b>「住所(ドメイン)」と「土地(サーバー)」の年1万円前後だけ</b>。制作費の大部分は「建物を建てる人件費」です。ここの構造を知っているかどうかで、見積もりの見え方が変わります。
     </div>
 
-    <h2>3. よくある疑問 Q&A</h2>
+    <h3>実際に作る順番 —— 6ステップ</h3>
+    <div class="kouza-steps">
+      <div class="kouza-step"><b>準備する</b><br />ドメイン(自分名義)とサーバーを契約し、管理アカウントに2段階認証をかける</div>
+      <div class="kouza-step"><b>建てる</b><br />AIに依頼してページを作る(第6章の依頼文をコピペ)。写真と文章は自分で用意</div>
+      <div class="kouza-step"><b>モデルルームで確認</b><br />パスワード付きのテスト環境で、スマホ表示や誤字を納得いくまでチェック</div>
+      <div class="kouza-step"><b>引っ越す(公開)</b><br />FTPソフト(暗号化接続)でサーバーへアップ。フォームは自分でテスト送信して受信まで確認</div>
+      <div class="kouza-step"><b>地図に載せる</b><br />Google Search Consoleに届け出て、検索に正しく出るようにする</div>
+      <div class="kouza-step"><b>防犯を点検する</b><br />スパム対策・セキュリティ設定を確認。公開したら終わり、ではない(第3章Q&A参照)</div>
+    </div>
+
+    <div class="kouza-callout">
+      <b>🗳 政治家・候補者を目指す方へ:</b> 一般のサイトに加えて、①寄付のご案内には政治資金規正法上の注意書き(外国人からの寄付は受けられない等)が必要 ②選挙が近づいた時期の掲載内容には公職選挙法上の制約がある——という2つの上乗せがあります。この2点はAI任せにせず、必ず選挙管理委員会の資料や条文で裏を取ってください(第4章「施主の責任」参照)。
+    </div>
+
+    <h2>❓ 3. よくある疑問 Q&A</h2>
 
     <div class="kouza-qa">
       <p class="q">ドメインは無料でも取れるって聞いたけど?</p>
@@ -229,6 +368,20 @@
     <div class="kouza-qa">
       <p class="q">フォームを置いたら、スパムが来るって本当?</p>
       <p class="a">来ます。公開されたフォームを自動巡回して、デタラメな文字列を投げ込むプログラム(ボット)が世界中で動いています(このサイトも公開2週間で見つかり、数十件届きました)。厄介なのは、フォームに「受付完了」の自動返信を付けている場合——スパムの差出人アドレスに自動返信を撃ち返してしまい、ドメインの信用を下げるおそれがあります。対策は無料でできます: <b>①人間には見えない罠の入力欄(honeypot)を仕込み、埋めてきたらボットと判定して破棄</b> <b>②日本語が1文字もない送信は受け付けない</b> <b>③スパムと判定した送信には自動返信を送らない</b>。この3点で、翌日からスパムはゼロになりました。「郵便受けには防犯」——公開したら終わり、ではないのです。</p>
+      <div class="kouza-flow">
+        <div class="fbox bad">🤖 ボット<br /><span style="font-size:.75rem;">デタラメな自動送信</span></div>
+        <div class="farrow">→</div>
+        <div class="fbox bad">👻 見えない罠に<br />引っかかる</div>
+        <div class="farrow">→</div>
+        <div class="fbox bad">🗑 その場で破棄<br /><span style="font-size:.75rem;">メールも自動返信も送らない</span></div>
+      </div>
+      <div class="kouza-flow">
+        <div class="fbox good">🙂 人間<br /><span style="font-size:.75rem;">ふつうに入力</span></div>
+        <div class="farrow">→</div>
+        <div class="fbox good">罠は見えないので<br />そのまま通過</div>
+        <div class="farrow">→</div>
+        <div class="fbox good">📬 メール到着<br /><span style="font-size:.75rem;">受付の自動返信も届く</span></div>
+      </div>
     </div>
 
     <div class="kouza-qa">
@@ -236,7 +389,7 @@
       <p class="a">あります。正直に書くと、このサイトも上の表の「HSTS」「管理アカウントの防護(2段階認証の総点検・バックアップコードの安全な保管)」は、<b>公開後のスパム事件をきっかけに総点検をして、後から実施したもの</b>です。公的機関(IPA)やセキュリティ専門家の公開チェックリストと自分のサイトを突き合わせ、足りない項目を1日で埋めました。順番はこうでした: <b>①スパム発覚→フォーム対策 ②ついでに全体を点検 ③通信の強化(HSTS)と不要ファイルの遮断 ④全管理アカウントの2段階認証を確認・有効化 ⑤復旧用コードを安全な場所に保管</b>。要件は事件が教えてくれる——だからこの表と、下の依頼文には<b>最初から</b>全部入れてあります。読者のみなさんは後追いせず、最初からどうぞ。</p>
     </div>
 
-    <h2>4. AIで作るときの心得 —— AIは大工、自分は施主</h2>
+    <h2>🔨 4. AIで作るときの心得 —— AIは大工、自分は施主</h2>
     <p>ただし「全部お任せ」ではありません。施主は設計図が読めなくてもいい代わりに、<b>完成した家に自分で住んでみて確かめる責任</b>があります。具体的には3つです。</p>
     <ol>
       <li><b>中身の正しさは自分の目で確認する。</b>コードの間違いは表示が崩れるのですぐ気づけますが、文章や数字の間違いは<b>正常に表示されてしまう</b>ため発見が遅れます。経歴・実績・連絡先は必ず自分で読む。</li>
@@ -244,7 +397,7 @@
       <li><b>検証は「使ってみる」でできる。</b>スマホで全ページを開く、フォームから自分でテスト送信してみる、自分の名前で検索してみる。コードが読めなくてもできる品質チェックです。</li>
     </ol>
 
-    <h2>5. 用語ミニ辞典</h2>
+    <h2>📖 5. 用語ミニ辞典</h2>
     <dl class="kouza-dict">
       <dt>ドメイン</dt>
       <dd>ネット上の住所(例: nakamura-yukinobu.jp)。年単位で借りる。名義は必ず自分に。</dd>
@@ -262,7 +415,7 @@
       <dd>検索エンジン最適化。まずは「Googleにサイトの存在を届け出る」ことから始まる。</dd>
     </dl>
 
-    <h2>6. 実践 —— そのままコピペできる「AIへの依頼文」</h2>
+    <h2>✍️ 6. 実践 —— そのままコピペできる「AIへの依頼文」</h2>
     <p>この講座の内容を、実際にAI(Claude Code など)へ依頼する文章に落とし込みました。<b>このサイト自体が、ほぼこの依頼内容で作られています</b>。○○の部分をご自身の内容に書き換えて、そのまま使ってください。</p>
     <h3>事前に自分で用意するもの(AIに任せないもの)</h3>
     <ul>
@@ -329,7 +482,7 @@
     </div>
     <p class="kouza-note" style="border-top:none; margin-top:8px; padding-top:0;">※この依頼文は一般的なベストプラクティス(IPA・OWASP等の公知の知見)のみで構成しており、当サイト固有の設定値は含みません。ブログ形式の解説は<a href="./#blog">ブログ</a>でも公開しています。</p>
 
-    <h2>おわりに</h2>
+    <h2>🌟 おわりに</h2>
     <p>まとめると——<b>ホームページの固定費は年1万円前後。残りは「建てる人件費」で、その多くは今、AIで置き換えられる。自作最大の果実は「思い立ったら翌日に足せる」機動力。ただし中身の確認・法律・使って検証は人間の仕事で、公開後は郵便受けの防犯(スパム対策)も忘れずに</b>。この構造を知っていれば、自作するにも、外注するにも、納得して判断できるはずです。</p>
     <p>このサイトを実際にAIと一緒に作ったときの体験談(つまずいた事件簿つき)は、ブログでも公開していきます。トップページのブログ欄からどうぞ。</p>
 
