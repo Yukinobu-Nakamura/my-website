@@ -47,6 +47,8 @@ ErrorDocument 500 /500.html
   Header always set X-Frame-Options         "SAMEORIGIN"
   Header always set X-XSS-Protection        "1; mode=block"
   Header always set Referrer-Policy         "strict-origin-when-cross-origin"
+  # HSTS: ブラウザに1年間HTTPS接続を強制(初回アクセスの平文経由を排除)
+  Header always set Strict-Transport-Security "max-age=31536000"
 </IfModule>
 
 # ---- ディレクトリ一覧表示禁止 ----
@@ -57,3 +59,9 @@ Options -Indexes
   Order allow,deny
   Deny from all
 </FilesMatch>
+
+# リリース情報(コミットハッシュ等)の外部公開を遮断
+<Files "RELEASE_INFO.txt">
+  Order allow,deny
+  Deny from all
+</Files>
