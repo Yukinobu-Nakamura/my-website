@@ -68,6 +68,26 @@ body {
 
 img { max-width: 100%; display: block; }
 a  { color: inherit; text-decoration: none; transition: var(--transition); }
+
+/* アクセシビリティ: キーボード操作でヘッダーを飛ばして本文へ */
+.skip-link {
+  position: absolute;
+  left: 0;
+  top: -48px;
+  z-index: 2000;
+  padding: .6rem 1.2rem;
+  background: var(--purple-700, #6d28d9);
+  color: #fff;
+  font-size: .9rem;
+  font-weight: 700;
+  border-radius: 0 0 var(--radius-sm, 6px) 0;
+  transition: top .2s ease;
+}
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid #fff;
+  outline-offset: -3px;
+}
 ul { list-style: none; }
 button { cursor: pointer; border: none; background: none; font-family: inherit; }
 input, textarea, select { font-family: inherit; }
@@ -1014,7 +1034,7 @@ input, textarea, select { font-family: inherit; }
 
 .support__note {
   font-size: .78rem;
-  color: var(--gray-400);
+  color: var(--gray-500);
   font-family: var(--font-jp);
 }
 
@@ -1126,7 +1146,7 @@ input, textarea, select { font-family: inherit; }
 .form-note {
   margin-top: .5rem;
   font-size: .78rem;
-  color: var(--gray-400);
+  color: var(--gray-500);
   font-family: var(--font-jp);
 }
 

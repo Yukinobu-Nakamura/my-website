@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     nav.classList.add('open');
     hamburger.classList.add('active');
     hamburger.setAttribute('aria-label', 'メニューを閉じる');
+    hamburger.setAttribute('aria-expanded', 'true');
   };
 
   const closeNav = () => {
@@ -34,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     nav.classList.remove('open');
     hamburger.classList.remove('active');
     hamburger.setAttribute('aria-label', 'メニューを開く');
+    hamburger.setAttribute('aria-expanded', 'false');
     window.scrollTo({ top: navScrollY, left: 0, behavior: 'instant' });
   };
 
