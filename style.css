@@ -1217,6 +1217,10 @@ input, textarea, select { font-family: inherit; }
    hover時も背景色を維持するため .social-btn:hover より後に定義する */
 .sns--x, .sns--x:hover   { background: #000;    border-color: #000; }
 .sns--yt, .sns--yt:hover { background: #FF0000; border-color: #FF0000; }
+.sns--ig, .sns--ig:hover {
+  background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
+  border-color: #d6249f;
+}
 
 .footer__nav {
   display: flex;
