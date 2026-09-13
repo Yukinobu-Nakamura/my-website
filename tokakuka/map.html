@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>都か区か国か? 施設管理主体マップ(東京都版)</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" integrity="sha384-pmjIAcz2bAn0xukfxADbZIb3t8oRT9Sv0rvO+BR5Csr6Dhqq+nZs59P0pPKQJkEV" crossorigin="anonymous">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" integrity="sha384-wgw+aLYNQ7dlhK47ZPK7FRACiq7ROZwgFNg0m04avm4CaXS+Z9Y7nMu8yNjBKYC+" crossorigin="anonymous">
+<style>
+  :root {
+    color-scheme: light;
+    --surface-1: #fcfcfb;
+    --page: #f9f9f7;
+    --ink-1: #0b0b0b;
+    --ink-2: #52514e;
+    --ink-muted: #898781;
+    --hairline: #e1e0d9;
+    --border: rgba(11,11,11,0.10);
+    --c-kuni: #2a78d6;      /* 国 */
+    --c-todofuken: #eb6834; /* 都道府県 */
+    --c-shikuchoson: #1baf7a; /* 市区町村 */
+    --c-sonota: #4a3aa7;    /* その他 */
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--page); color: var(--ink-1); }
+  #app { display: flex; flex-direction: column; height: 100%; }
+  header { padding: 10px 16px 8px; background: var(--surface-1); border-bottom: 1px solid var(--hairline); }
+  header h1 { font-size: 18px; margin: 0 0 2px; }
+  header p { margin: 0; font-size: 12px; color: var(--ink-2); }
+  #controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 16px; background: var(--surface-1); border-bottom: 1px solid var(--hairline); }
+  .fbtn { border: 1px solid var(--border); background: #fff; border-radius: 999px; padding: 6px 14px; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; color: var(--ink-1); }
+  .fbtn .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+  .fbtn .cnt { color: var(--ink-2); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .fbtn[aria-pressed="false"] { opacity: 0.38; }
+  .fbtn:focus-visible { outline: 2px solid var(--c-kuni); outline-offset: 2px; }
+  .hidden { display: none !important; }
+  #genreSel { border: 1px solid var(--border); border-radius: 8px; padding: 6px 8px; font-size: 13px; background: #fff; color: var(--ink-1); }
+  #map { flex: 1; }
+  .pinicon { display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #fff; font-weight: 700; font-size: 11px; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.35); }
+  .popup h3 { margin: 0 0 4px; font-size: 14px; }
+  .popup .chip { display: inline-block; border-radius: 4px; color: #fff; font-size: 11px; padding: 2px 7px; font-weight: 700; margin-bottom: 4px; }
+  .popup p { margin: 4px 0; font-size: 12px; color: var(--ink-2); }
+  .popup .admin { color: var(--ink-1); font-weight: 600; font-size: 12px; }
+  .popup .src { font-size: 10px; color: var(--ink-muted); border-top: 1px solid var(--hairline); margin-top: 6px; padding-top: 4px; }
+  .popup .warn { color: #8a5300; font-size: 11px; }
+  footer { padding: 6px 16px; font-size: 10px; color: var(--ink-muted); background: var(--surface-1); border-top: 1px solid var(--hairline); line-height: 1.5; }
+  footer a { color: var(--ink-2); }
+  @media (max-width: 600px) {
+    header h1 { font-size: 15px; }
+    .fbtn { padding: 5px 10px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>都か区か国か? 施設管理主体マップ(東京都版)</h1>
+    <p>施設をクリックすると「どこが管理しているか」が分かります。同じ街の施設でも、管理主体は国・都・区市町村・その他(一部事務組合など)に分かれています。</p>
+  </header>
+  <div id="controls" role="group" aria-label="管理主体で絞り込み">
+    <button class="fbtn" data-cat="国" aria-pressed="true"><span class="dot" style="background:var(--c-kuni)"></span>国 <span class="cnt"></span></button>
+    <button class="fbtn" data-cat="都道府県" aria-pressed="true"><span class="dot" style="background:var(--c-todofuken)"></span>都道府県 <span class="cnt"></span></button>
+    <button class="fbtn" data-cat="市区町村" aria-pressed="true"><span class="dot" style="background:var(--c-shikuchoson)"></span>市区町村 <span class="cnt"></span></button>
+    <button class="fbtn" data-cat="その他" aria-pressed="true"><span class="dot" style="background:var(--c-sonota)"></span>その他(組合・独法等) <span class="cnt"></span></button>
+    <select id="genreSel" aria-label="ジャンルで絞り込み"><option value="">全ジャンル</option></select>
+    <span style="display:inline-flex;gap:4px;align-items:center;">
+      <input id="muniSearch" list="muniList" placeholder="自治体を検索(例: 豊島区)" aria-label="自治体を検索"
+             style="border:1px solid var(--border);border-radius:8px;padding:6px 8px;font-size:13px;width:170px;">
+      <datalist id="muniList"></datalist>
+      <button id="muniGo" class="fbtn" style="padding:6px 10px;">表示</button>
+      <button id="muniClear" class="fbtn hidden" style="padding:6px 10px;">✕</button>
+    </span>
+    <span id="total" style="font-size:12px;color:var(--ink-2);"></span>
+  </div>
+  <div id="map"></div>
+  <footer>
+    <p style="margin:0 0 4px;"><b>出典</b>:
+    「国土数値情報(学校 2021年度/都市公園 2011年度/文化施設 2013年度/市区町村役場等 2022年度/行政区域 2025年版)」(国土交通省 <a href="https://nlftp.mlit.go.jp/ksj/" target="_blank" rel="noopener">https://nlftp.mlit.go.jp/ksj/</a>)を加工して作成 /
+    東京消防庁「<a href="https://catalog.data.metro.tokyo.lg.jp/dataset/t000017d0000000001" target="_blank" rel="noopener">東京消防庁本部及び消防署所在一覧</a>」(東京都オープンデータカタログサイト)を加工して作成・<a href="https://creativecommons.org/licenses/by/4.0/deed.ja" target="_blank" rel="noopener">CC BY 4.0</a> /
+    背景地図: <a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル(淡色地図)</a>(国土地理院) /
+    一部施設の位置座標: 「位置参照情報(街区レベル)」(国土交通省 <a href="https://nlftp.mlit.go.jp/isj/" target="_blank" rel="noopener">https://nlftp.mlit.go.jp/isj/</a>)を加工して作成・国土地理院 地名・住所検索を併用 /
+    国の機関・清掃工場等は各機関公式サイトの公開情報をもとに作成。</p>
+    <p style="margin:0;"><b>ご利用にあたって(免責)</b>:
+    「国/都道府県/市区町村/その他」の区分と各施設の解説文は、本サイト作成者が学習用に独自に整理したものであり、国土交通省・東京都・各機関の公式見解ではありません。
+    元データの年次以降の開設・廃止・移転・所管替えは反映されていない場合があります。実際の所管・お手続きは必ず各機関の公式サイト等でご確認ください。
+    地図上の位置は代表地点であり、施設の正確な敷地範囲を示すものではありません。検索で表示される区市町村の境界線は簡略化した概略であり、正確な行政界を示すものではありません。内容の誤りにお気づきの場合は<a href="/index.html#contact">お問い合わせ窓口</a>からご連絡ください。</p>
+  </footer>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js" integrity="sha384-eXVCORTRlv4FUUgS/xmOyr66XBVraen8ATNLMESp92FKXLAMiKkerixTiBvXriZr" crossorigin="anonymous"></script>
+<script src="data/facilities.js"></script>
+<script src="data/boundaries.js"></script>
+<script>
+(function () {
+  "use strict";
+  const CAT = {
+    "国":       { color: "#2a78d6", glyph: "国" },
+    "都道府県": { color: "#eb6834", glyph: "都" },
+    "市区町村": { color: "#1baf7a", glyph: "市" },
+    "その他":   { color: "#4a3aa7", glyph: "他" },
+  };
+
+  const map = L.map("map", { preferCanvas: true }).setView([35.694, 139.55], 10);
+  L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png", {
+    attribution: '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">国土地理院</a>',
+    maxZoom: 18,
+  }).addTo(map);
+
+  const cluster = L.markerClusterGroup({
+    chunkedLoading: true,
+    disableClusteringAtZoom: 16,
+    maxClusterRadius: 60,
+  });
+  map.addLayer(cluster);
+
+  // ジャンル一覧(大分類のみ)
+  const genreOf = f => (f.g || "").replace(/\(.*$/, "");
+  const genres = [...new Set(FACILITIES.map(genreOf))].sort();
+  const genreSel = document.getElementById("genreSel");
+  for (const g of genres) {
+    const o = document.createElement("option");
+    o.value = g; o.textContent = g;
+    genreSel.appendChild(o);
+  }
+
+  const state = { cats: new Set(Object.keys(CAT)), genre: "" };
+
+  function esc(s) {
+    return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  function makeMarker(f) {
+    const c = CAT[f.c] || CAT["その他"];
+    const icon = L.divIcon({
+      className: "",
+      html: `<div class="pinicon" style="background:${c.color};width:22px;height:22px;">${c.glyph}</div>`,
+      iconSize: [22, 22], iconAnchor: [11, 11], popupAnchor: [0, -11],
+    });
+    const m = L.marker([f.lat, f.lng], { icon, title: f.n });
+    m.bindPopup(() => `
+      <div class="popup">
+        <span class="chip" style="background:${c.color}">${esc(f.c)}</span>
+        <h3>${esc(f.n)}</h3>
+        <p class="admin">管理: ${esc(f.a)}</p>
+        <p>${esc(f.g)}${f.m ? " / 所在: " + esc(f.m) : ""}</p>
+        <p>${esc(f.note)}</p>
+        ${f.st === "check" ? '<p class="warn">⚠ 所在地・詳細は要一次確認(参考表示)</p>' : ""}
+        <p class="src">出典: ${esc(f.src)}</p>
+      </div>`, { maxWidth: 300 });
+    return m;
+  }
+
+  const markers = FACILITIES.map(f => ({ f, m: makeMarker(f) }));
+
+  function refresh() {
+    cluster.clearLayers();
+    const visible = [];
+    for (const { f, m } of markers) {
+      if (!state.cats.has(f.c)) continue;
+      if (state.genre && genreOf(f) !== state.genre) continue;
+      visible.push(m);
+    }
+    cluster.addLayers(visible);
+    document.getElementById("total").textContent = `表示中: ${visible.length.toLocaleString()}件`;
+  }
+
+  // 件数バッジ
+  const counts = {};
+  for (const f of FACILITIES) counts[f.c] = (counts[f.c] || 0) + 1;
+  document.querySelectorAll(".fbtn[data-cat]").forEach(btn => {
+    const cat = btn.dataset.cat;
+    btn.querySelector(".cnt").textContent = (counts[cat] || 0).toLocaleString();
+    btn.addEventListener("click", () => {
+      const on = btn.getAttribute("aria-pressed") === "true";
+      btn.setAttribute("aria-pressed", String(!on));
+      if (on) state.cats.delete(cat); else state.cats.add(cat);
+      refresh();
+    });
+  });
+  genreSel.addEventListener("change", () => { state.genre = genreSel.value; refresh(); });
+
+  // ---- 自治体検索(境界ハイライト) ----
+  const muniNames = typeof MUNI_BOUNDARIES !== "undefined" ? Object.keys(MUNI_BOUNDARIES) : [];
+  const dl = document.getElementById("muniList");
+  for (const n of muniNames) {
+    const o = document.createElement("option");
+    o.value = n;
+    dl.appendChild(o);
+  }
+  let boundaryLayer = null;
+  function clearBoundary() {
+    if (boundaryLayer) { map.removeLayer(boundaryLayer); boundaryLayer = null; }
+    document.getElementById("muniClear").classList.add("hidden");
+  }
+  function showMuni(qRaw) {
+    const q = (qRaw || "").trim().replace(/\s/g, "");
+    if (!q) return;
+    // 完全一致 → 前方一致 → 部分一致 の順で探す
+    const name = muniNames.find(n => n === q)
+      || muniNames.find(n => n.startsWith(q))
+      || muniNames.find(n => n.includes(q));
+    if (!name) {
+      alert("該当する自治体が見つかりません(東京都内の区市町村名で入力してください)");
+      return;
+    }
+    clearBoundary();
+    boundaryLayer = L.polygon(MUNI_BOUNDARIES[name], {
+      color: "#d03b3b", weight: 3, fillColor: "#d03b3b", fillOpacity: 0.06, interactive: false,
+    }).addTo(map);
+    map.fitBounds(boundaryLayer.getBounds(), { padding: [20, 20] });
+    document.getElementById("muniSearch").value = name;
+    document.getElementById("muniClear").classList.remove("hidden");
+  }
+  document.getElementById("muniGo").addEventListener("click", () => showMuni(document.getElementById("muniSearch").value));
+  document.getElementById("muniSearch").addEventListener("keydown", e => {
+    if (e.key === "Enter") showMuni(e.target.value);
+  });
+  document.getElementById("muniSearch").addEventListener("change", e => showMuni(e.target.value));
+  document.getElementById("muniClear").addEventListener("click", () => {
+    clearBoundary();
+    document.getElementById("muniSearch").value = "";
+  });
+
+  refresh();
+})();
+</script>
+</body>
+</html>

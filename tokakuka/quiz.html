@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>都か区か国かクイズ — 施設管理主体あてゲーム</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous">
+<style>
+  :root {
+    color-scheme: light;
+    --surface-1: #fcfcfb;
+    --page: #f9f9f7;
+    --ink-1: #0b0b0b;
+    --ink-2: #52514e;
+    --ink-muted: #898781;
+    --hairline: #e1e0d9;
+    --border: rgba(11,11,11,0.10);
+    --c-kuni: #2a78d6;
+    --c-todofuken: #eb6834;
+    --c-shikuchoson: #1baf7a;
+    --c-sonota: #4a3aa7;
+    --good: #006300;
+    --bad: #d03b3b;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--page); color: var(--ink-1); }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 20px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 6px; }
+  .lead { color: var(--ink-2); font-size: 14px; margin: 0 0 20px; line-height: 1.7; }
+  .card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  select, .btn { font-size: 15px; border-radius: 10px; border: 1px solid var(--border); padding: 10px 14px; background: #fff; color: var(--ink-1); }
+  .btn { cursor: pointer; font-weight: 600; }
+  .btn.primary { background: var(--ink-1); color: #fff; border-color: var(--ink-1); }
+  .btn:focus-visible { outline: 2px solid var(--c-kuni); outline-offset: 2px; }
+  .progress { font-size: 13px; color: var(--ink-2); margin-bottom: 8px; display: flex; justify-content: space-between; font-variant-numeric: tabular-nums; }
+  .qname { font-size: 20px; font-weight: 700; margin: 4px 0 2px; }
+  .qmeta { font-size: 13px; color: var(--ink-2); margin-bottom: 10px; }
+  #qmap { height: 200px; border-radius: 10px; border: 1px solid var(--hairline); margin-bottom: 14px; }
+  .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .abtn { border: 2px solid var(--border); border-radius: 12px; padding: 14px 10px; font-size: 16px; font-weight: 700; cursor: pointer; background: #fff; color: var(--ink-1); display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .abtn .dot { width: 14px; height: 14px; border-radius: 50%; }
+  .abtn:disabled { cursor: default; opacity: 0.55; }
+  .abtn.correct { border-color: var(--good); background: #eef7ee; opacity: 1; }
+  .abtn.wrong { border-color: var(--bad); background: #fbeeee; opacity: 1; }
+  .verdict { font-size: 34px; font-weight: 800; margin: 12px 0 4px; }
+  .verdict.ok { color: var(--good); }
+  .verdict.ng { color: var(--bad); }
+  .explain { background: #fff; border: 1px solid var(--hairline); border-radius: 10px; padding: 12px 14px; font-size: 14px; line-height: 1.7; color: var(--ink-2); }
+  .explain b { color: var(--ink-1); }
+  .explain .src { display: block; margin-top: 6px; font-size: 11px; color: var(--ink-muted); }
+  .next { margin-top: 14px; text-align: right; }
+  .score { font-size: 44px; font-weight: 800; text-align: center; margin: 8px 0; font-variant-numeric: tabular-nums; }
+  .score small { font-size: 20px; color: var(--ink-2); font-weight: 600; }
+  .grade { text-align: center; font-size: 16px; margin-bottom: 18px; color: var(--ink-2); }
+  .endbtns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .hidden { display: none; }
+  #reportModal { display: flex; }
+  #reportModal.hidden { display: none; }
+  footer { font-size: 10px; color: var(--ink-muted); line-height: 1.6; margin-top: 24px; }
+  footer a { color: var(--ink-2); }
+  @media (max-width: 480px) { .answers { grid-template-columns: 1fr 1fr; } .qname { font-size: 17px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>都か区か国かクイズ</h1>
+  <p class="lead">街の施設、実は「どこが管理しているか」はバラバラです。表示された施設を管理しているのは<b>国?都道府県?市区町村?それともその他?</b> 全10問に挑戦!</p>
+
+  <!-- スタート画面 -->
+  <div id="start" class="card">
+    <p style="font-size:14px;margin-top:0;">出題範囲を選んでスタート:</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <label style="font-size:13px;">都道府県<br>
+        <select id="prefSel">
+          <option value="13" selected>東京都</option>
+          <option value="" disabled>その他の道府県(今後追加予定)</option>
+        </select>
+      </label>
+      <label style="font-size:13px;">市区町村<br>
+        <select id="citySel">
+          <option value="" selected>東京都全体</option>
+        </select>
+      </label>
+    </div>
+    <div style="margin-top:12px;font-size:13px;">
+      <span style="color:var(--ink-2);">モード</span><br>
+      <label style="margin-right:14px;"><input type="radio" name="qmode" value="ten" checked> 10問チャレンジ</label>
+      <label><input type="radio" name="qmode" value="endless"> エンドレス(3回間違えたら終了)</label>
+    </div>
+    <div style="margin-top:16px;">
+      <button id="startBtn" class="btn primary">クイズをはじめる</button>
+    </div>
+  </div>
+
+  <!-- 出題画面 -->
+  <div id="quiz" class="card hidden">
+    <div class="progress"><span id="qnum"></span><span id="qscore"></span></div>
+    <div class="qname" id="qname"></div>
+    <div class="qmeta" id="qplace"></div>
+    <div id="qmap"></div>
+    <p style="font-size:14px;font-weight:600;margin:0 0 10px;">この施設を管理しているのは?</p>
+    <div class="answers" id="answers"></div>
+    <div id="result" class="hidden">
+      <div class="verdict" id="verdict"></div>
+      <div class="explain" id="explain"></div>
+      <div style="margin-top:8px;text-align:left;">
+        <button id="reportBtn" class="btn" style="font-size:12px;padding:6px 10px;color:var(--ink-2);">⚠ この答え、間違ってない?(誤り報告)</button>
+      </div>
+      <div class="next"><button id="nextBtn" class="btn primary">次の問題へ</button></div>
+    </div>
+  </div>
+
+  <!-- 結果画面 -->
+  <div id="end" class="card hidden">
+    <p style="text-align:center;font-size:15px;margin:0;">結果発表</p>
+    <div class="score"><span id="finalScore"></span><small id="finalMax"> / 10点</small></div>
+    <p id="finalStats" style="text-align:center;font-size:15px;margin:0 0 8px;font-variant-numeric:tabular-nums;"></p>
+    <div class="grade" id="grade"></div>
+    <div class="endbtns">
+      <button id="reviewBtn" class="btn hidden">間違えた問題を振り返る</button>
+      <button id="retryBtn" class="btn primary">もう一度やる</button>
+      <a id="homeBtn" class="btn" href="#" style="text-decoration:none;">ホームに戻る</a>
+    </div>
+  </div>
+
+  <!-- 振り返り画面 -->
+  <div id="review" class="card hidden">
+    <h3 style="margin:0 0 10px;font-size:16px;">間違えた問題の振り返り</h3>
+    <div id="reviewList"></div>
+    <div style="text-align:right;margin-top:12px;">
+      <button id="reviewBack" class="btn primary">結果に戻る</button>
+    </div>
+  </div>
+
+  <!-- 誤り報告モーダル -->
+  <div id="reportModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1000;align-items:center;justify-content:center;padding:16px;">
+    <div class="card" style="max-width:480px;width:100%;margin:0;">
+      <h3 style="margin:0 0 6px;font-size:16px;">誤り報告</h3>
+      <p style="font-size:12px;color:var(--ink-2);margin:0 0 12px;">「管理主体が違う」「施設がもう存在しない」など、お気づきの点を根拠URLとあわせてお知らせください。確認のうえ修正します。</p>
+      <label style="font-size:12px;color:var(--ink-2);">施設名</label>
+      <input id="repFacility" type="text" readonly style="width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:8px;padding:8px;background:#f4f4f2;margin:2px 0 10px;">
+      <label style="font-size:12px;color:var(--ink-2);">修正内容 <span style="color:var(--bad);">*</span></label>
+      <textarea id="repDetail" rows="3" placeholder="例: この施設は2024年に廃止されています / 管理は市ではなく都です" style="width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:8px;padding:8px;margin:2px 0 10px;font-family:inherit;"></textarea>
+      <label style="font-size:12px;color:var(--ink-2);">根拠となる情報のURL <span style="color:var(--bad);">*</span>(公式サイト・報道など)</label>
+      <input id="repUrl" type="url" placeholder="https://..." style="width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:8px;padding:8px;margin:2px 0 4px;">
+      <input id="repHp" type="text" style="display:none;" tabindex="-1" autocomplete="off">
+      <p style="font-size:11px;color:var(--ink-muted);margin:6px 0 0;line-height:1.6;">ご入力内容は掲載内容の確認・修正のみに使用します。氏名・連絡先など個人が特定できる情報や、第三者の個人情報は入力しないでください(返信は行いません)。送信時、連続投稿防止のため接続元情報を復元できない形に変換した値のみを記録します。</p>
+      <p id="repMsg" style="font-size:12px;color:var(--bad);min-height:16px;margin:4px 0;"></p>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button id="repCancel" class="btn">閉じる</button>
+        <button id="repSend" class="btn primary">送信する</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p style="margin:0 0 4px;"><b>出典</b>:
+    「国土数値情報(学校 2021年度/都市公園 2011年度/文化施設 2013年度/市区町村役場等 2022年度)」(国土交通省 <a href="https://nlftp.mlit.go.jp/ksj/" target="_blank" rel="noopener">https://nlftp.mlit.go.jp/ksj/</a>)を加工して作成 /
+    東京消防庁「<a href="https://catalog.data.metro.tokyo.lg.jp/dataset/t000017d0000000001" target="_blank" rel="noopener">東京消防庁本部及び消防署所在一覧</a>」(東京都オープンデータカタログサイト)を加工して作成・<a href="https://creativecommons.org/licenses/by/4.0/deed.ja" target="_blank" rel="noopener">CC BY 4.0</a> /
+    背景地図: <a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル(淡色地図)</a>(国土地理院) /
+    一部施設の位置座標: 「位置参照情報(街区レベル)」(国土交通省 <a href="https://nlftp.mlit.go.jp/isj/" target="_blank" rel="noopener">https://nlftp.mlit.go.jp/isj/</a>)を加工して作成・国土地理院 地名・住所検索を併用 /
+    国の機関・清掃工場等は各機関公式サイトの公開情報をもとに作成。</p>
+    <p style="margin:0;"><b>ご利用にあたって(免責)</b>:
+    「国/都道府県/市区町村/その他」の区分と解説文は、本サイト作成者が学習用に独自に整理したものであり、各機関の公式見解ではありません。
+    元データの年次以降の開設・廃止・移転・所管替えは反映されていない場合があります。実際の所管・お手続きは必ず各機関の公式サイト等でご確認ください。
+    内容の誤りにお気づきの場合は、クイズ内の「誤り報告」ボタンまたは<a href="/index.html#contact">お問い合わせ窓口</a>からご連絡ください。</p>
+  </footer>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
+<script src="data/facilities.js"></script>
+<script>
+(function () {
+  "use strict";
+  // ▼ ホームページ組み込み時に戻り先URLをここで設定
+  const HOME_URL = "/benkyobeya.html";
+
+  const CATS = ["国", "都道府県", "市区町村", "その他"];
+  const CAT_COLOR = { "国": "#2a78d6", "都道府県": "#eb6834", "市区町村": "#1baf7a", "その他": "#4a3aa7" };
+  const CAT_LABEL = { "その他": "その他(組合・独法など)" };
+
+  const $ = id => document.getElementById(id);
+  const genreOf = f => (f.g || "").replace(/\(.*$/, "");
+  const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  let questions = [], idx = 0, score = 0, answered = false;
+  let mode = "ten", mistakes = 0, wrongs = [], repTarget = null;
+  const MAX_MISS = 3;
+  let qmap = null, qmarker = null;
+
+  // 市区町村セレクトを構築(市区町村コード順)
+  (function () {
+    const present = new Set(FACILITIES.map(f => f.m).filter(Boolean));
+    const munis = (typeof MUNI_ORDER !== "undefined" ? MUNI_ORDER : [...present]).filter(m => present.has(m));
+    const sel = $("citySel");
+    for (const m of munis) {
+      const o = document.createElement("option");
+      o.value = m; o.textContent = m;
+      sel.appendChild(o);
+    }
+  })();
+
+  // 出題ミックス: ねじれ良問2 + 国2 + その他2 + 都2 + 市区町村2 (足りなければ範囲内全体から補充)
+  function buildQuestions() {
+    const muni = $("citySel").value;
+    // 出題は「現行の公式情報と照合済み(v=1)」の施設に限定(誤った正解を教えないため)
+    const pool = FACILITIES.filter(f => (!muni || f.m === muni) && f.st !== "check" && f.v === 1);
+    const used = new Set();
+    const pickFrom = (arr, n) => {
+      const out = [];
+      for (const f of shuffle(arr.slice())) {
+        if (out.length >= n) break;
+        if (used.has(f.n)) continue;
+        used.add(f.n); out.push(f);
+      }
+      return out;
+    };
+    const nejire = pool.filter(f => genreOf(f) === "ねじれ良問");
+    const byCat = c => pool.filter(f => f.c === c && genreOf(f) !== "ねじれ良問");
+    let qs = [
+      ...pickFrom(nejire, 2),
+      ...pickFrom(byCat("国"), 2),
+      ...pickFrom(byCat("その他"), 2),
+      ...pickFrom(byCat("都道府県"), 2),
+      ...pickFrom(byCat("市区町村"), 2),
+    ];
+    const n = Math.min(10, pool.length);
+    if (qs.length < n) qs = qs.concat(pickFrom(pool, n - qs.length));
+    qs = shuffle(qs).slice(0, n);
+    if (mode === "endless") {
+      // 序盤10問はミックス、その後は範囲内の全施設をシャッフルして続く(プールが尽きるまで)
+      const usedNames = new Set(qs.map(f => f.n));
+      const rest = shuffle(pool.filter(f => !usedNames.has(f.n)));
+      qs = qs.concat(rest);
+    }
+    return qs;
+  }
+
+  function showQuestion() {
+    const f = questions[idx];
+    answered = false;
+    $("qnum").textContent = mode === "endless"
+      ? `第 ${idx + 1} 問(あと ${MAX_MISS - mistakes} 回間違えたら終了)`
+      : `第 ${idx + 1} 問 / ${questions.length} 問`;
+    $("qscore").textContent = `正解 ${score}`;
+    // 公園は名称だけでは分かりにくいため補記(都立/区立/国営が混在するため答えのヒントにはならない)
+    const isPark = genreOf(f) === "公園" && !/[公園園地緑地広場緑道]$/.test(f.n);
+    $("qname").textContent = f.n + (isPark ? "(公園)" : "");
+    $("qplace").textContent = f.m ? `所在: 東京都${f.m}` : "所在: 東京都内";
+    $("result").classList.add("hidden");
+
+    const box = $("answers");
+    box.innerHTML = "";
+    for (const c of CATS) {
+      const b = document.createElement("button");
+      b.className = "abtn";
+      b.innerHTML = `<span class="dot" style="background:${CAT_COLOR[c]}"></span>${esc(CAT_LABEL[c] || c)}`;
+      b.addEventListener("click", () => answer(c, b));
+      box.appendChild(b);
+    }
+
+    if (!qmap) {
+      qmap = L.map("qmap", { zoomControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, touchZoom: false });
+      L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png", {
+        attribution: '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">国土地理院</a>', maxZoom: 18,
+      }).addTo(qmap);
+    }
+    qmap.setView([f.lat, f.lng], 14);
+    if (qmarker) qmap.removeLayer(qmarker);
+    qmarker = L.circleMarker([f.lat, f.lng], { radius: 9, color: "#0b0b0b", weight: 2, fillColor: "#ffffff", fillOpacity: 1 }).addTo(qmap);
+    setTimeout(() => qmap.invalidateSize(), 0);
+  }
+
+  function answer(choice, btn) {
+    if (answered) return;
+    answered = true;
+    const f = questions[idx];
+    const ok = choice === f.c;
+    if (ok) score++;
+    else { mistakes++; wrongs.push({ f: f, chosen: choice }); }
+    document.querySelectorAll(".abtn").forEach(b => {
+      b.disabled = true;
+      const label = b.textContent.trim();
+      const cat = CATS.find(c => label === (CAT_LABEL[c] || c));
+      if (cat === f.c) b.classList.add("correct");
+      else if (b === btn && !ok) b.classList.add("wrong");
+    });
+    $("verdict").textContent = ok ? "○ 正解!" : "× 残念…";
+    $("verdict").className = "verdict " + (ok ? "ok" : "ng");
+    $("explain").innerHTML =
+      `正解は <b style="color:${CAT_COLOR[f.c]}">${esc(CAT_LABEL[f.c] || f.c)}</b> — 管理: <b>${esc(f.a)}</b><br>` +
+      esc(f.note) +
+      (f.st === "check" ? "<br>⚠ 詳細は要一次確認の参考情報を含みます。" : "") +
+      `<span class="src">出典: ${esc(f.src)}</span>`;
+    $("qscore").textContent = `正解 ${score}`;
+    $("nextBtn").textContent = isFinished() ? "結果を見る" : "次の問題へ";
+    $("result").classList.remove("hidden");
+    $("nextBtn").focus();
+  }
+
+  function isFinished() {
+    if (idx + 1 >= questions.length) return true;
+    return mode === "endless" && mistakes >= MAX_MISS;
+  }
+
+  function showEnd() {
+    $("quiz").classList.add("hidden");
+    $("end").classList.remove("hidden");
+    const total = idx + 1;  // 実際に回答した問題数
+    const rate = total ? Math.round(score / total * 100) : 0;
+    $("finalScore").textContent = score;
+    $("finalMax").textContent = ` / ${total}問`;
+    $("finalStats").textContent = `正答数 ${score}問 ・ 正答率 ${rate}%` +
+      (mode === "endless" && mistakes >= MAX_MISS ? "(3回間違えたため終了)" :
+       mode === "endless" ? "(出題範囲の問題をすべて回答!)" : "");
+    $("reviewBtn").classList.toggle("hidden", wrongs.length === 0);
+    const r = total ? score / total : 0;
+    const g = r >= 0.9 ? "すばらしい! 行政管轄マスターです。政治家より詳しいかも?"
+      : r >= 0.7 ? "かなり詳しい! 「都か区か国か」の感覚が身についています。"
+      : r >= 0.5 ? "なかなかの好成績。ねじれ問題に注意すればもっと伸びます。"
+      : r >= 0.3 ? "行政の管轄は本当に分かりにくい…。もう一度挑戦してみましょう。"
+      : "どこが管理しているかは本当に分かりにくい…でも大丈夫、それが普通です。もう一度どうぞ!";
+    $("grade").textContent = g;
+  }
+
+  function startQuiz() {
+    mode = document.querySelector('input[name="qmode"]:checked').value;
+    questions = buildQuestions();
+    idx = 0; score = 0; mistakes = 0; wrongs = [];
+    $("start").classList.add("hidden");
+    $("end").classList.add("hidden");
+    $("review").classList.add("hidden");
+    $("quiz").classList.remove("hidden");
+    showQuestion();
+  }
+  $("startBtn").addEventListener("click", startQuiz);
+  $("retryBtn").addEventListener("click", startQuiz);
+  $("nextBtn").addEventListener("click", () => {
+    if (isFinished()) { showEnd(); return; }
+    idx++;
+    showQuestion();
+  });
+  $("homeBtn").href = HOME_URL;
+
+  // ---- 振り返り ----
+  const CAT_LABEL2 = c => esc(CAT_LABEL[c] || c);
+  $("reviewBtn").addEventListener("click", () => {
+    const box = $("reviewList");
+    box.innerHTML = "";
+    wrongs.forEach((w, i) => {
+      const f = w.f;
+      const div = document.createElement("div");
+      div.className = "explain";
+      div.style.marginBottom = "10px";
+      div.innerHTML =
+        `<b>${esc(f.n)}</b><span style="color:var(--ink-muted);font-size:12px;"> (${esc(f.m ? "東京都" + f.m : "東京都内")})</span><br>` +
+        `あなたの回答: <b style="color:var(--bad);">${CAT_LABEL2(w.chosen)}</b> → 正解: <b style="color:${CAT_COLOR[f.c]};">${CAT_LABEL2(f.c)}</b> ` +
+        `— 管理: <b>${esc(f.a)}</b><br>${esc(f.note)}` +
+        `<div style="text-align:right;margin-top:6px;"><button class="btn rev-report" data-i="${i}" style="font-size:11px;padding:4px 8px;color:var(--ink-2);">⚠ この答え、間違ってない?(誤り報告)</button></div>`;
+      box.appendChild(div);
+    });
+    box.querySelectorAll(".rev-report").forEach(b =>
+      b.addEventListener("click", () => openReport(wrongs[Number(b.dataset.i)].f)));
+    $("end").classList.add("hidden");
+    $("review").classList.remove("hidden");
+  });
+  $("reviewBack").addEventListener("click", () => {
+    $("review").classList.add("hidden");
+    $("end").classList.remove("hidden");
+  });
+
+  // ---- 誤り報告(プール送信) ----
+  const REPORT_ENDPOINT = "report.php";  // 本番HP設置時のエンドポイント(ローカル確認サーバも同パスで受付)
+  function openReport(f) {
+    repTarget = f || null;
+    $("repFacility").value = f ? f.n : "";
+    $("repDetail").value = "";
+    $("repUrl").value = "";
+    $("repMsg").textContent = "";
+    $("reportModal").classList.remove("hidden");
+  }
+  $("reportBtn").addEventListener("click", () => openReport(questions[idx]));
+  $("repCancel").addEventListener("click", () => $("reportModal").classList.add("hidden"));
+  $("repSend").addEventListener("click", async () => {
+    const detail = $("repDetail").value.trim();
+    const url = $("repUrl").value.trim();
+    if (!detail) { $("repMsg").textContent = "修正内容を入力してください。"; return; }
+    if (!/^https?:\/\/.+\..+/.test(url)) { $("repMsg").textContent = "根拠URL(https://〜)は必須です。"; return; }
+    if ($("repHp").value) { $("reportModal").classList.add("hidden"); return; }
+    const f = repTarget || {};
+    const payload = {
+      facility: $("repFacility").value, detail: detail.slice(0, 1000), url: url.slice(0, 500),
+      answer: f.c || "", admin: f.a || "", muni: f.m || "", page: "quiz",
+    };
+    $("repSend").disabled = true;
+    try {
+      const res = await fetch(REPORT_ENDPOINT, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(res.status);
+      $("reportModal").classList.add("hidden");
+      alert("報告を受け付けました。ご協力ありがとうございます!");
+    } catch (e) {
+      $("repMsg").textContent = "送信に失敗しました。時間をおいてお試しください。";
+    } finally {
+      $("repSend").disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>
