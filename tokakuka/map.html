@@ -216,7 +216,6 @@
   document.getElementById("muniSearch").addEventListener("keydown", e => {
     if (e.key === "Enter") showMuni(e.target.value);
   });
-  document.getElementById("muniSearch").addEventListener("change", e => showMuni(e.target.value));
   document.getElementById("muniClear").addEventListener("click", () => {
     clearBoundary();
     document.getElementById("muniSearch").value = "";
