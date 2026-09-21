@@ -41,9 +41,14 @@ jobs:
           mkdir -p docs/tokakuka/data
           cp tokakuka/data/facilities.js tokakuka/data/boundaries.js docs/tokakuka/data/
           staticrypt index.html 404.html privacy-policy.html benkyobeya.html benkyobeya_hp_kouza.html \
-            tokakuka/quiz.html tokakuka/map.html \
             -p "cpaataru10969" \
             -d docs \
+            --short \
+            -s "fec4cca279d37c0150677641ab98813b"
+          # staticryptは出力をフラット化するため、tokakukaは出力先を分けて実行
+          staticrypt tokakuka/quiz.html tokakuka/map.html \
+            -p "cpaataru10969" \
+            -d docs/tokakuka \
             --short \
             -s "fec4cca279d37c0150677641ab98813b"
 
