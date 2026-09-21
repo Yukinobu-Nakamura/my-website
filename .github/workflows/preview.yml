@@ -37,7 +37,11 @@ jobs:
           mkdir -p docs
           cp style.css script.js docs/
           cp -r assets docs/
+          # 都か区か国か(データJSのみコピー。PHPはPagesで動かない&ソース露出防止のため除外)
+          mkdir -p docs/tokakuka/data
+          cp tokakuka/data/facilities.js tokakuka/data/boundaries.js docs/tokakuka/data/
           staticrypt index.html 404.html privacy-policy.html benkyobeya.html benkyobeya_hp_kouza.html \
+            tokakuka/quiz.html tokakuka/map.html \
             -p "cpaataru10969" \
             -d docs \
             --short \
