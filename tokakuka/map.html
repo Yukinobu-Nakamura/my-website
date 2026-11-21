@@ -65,7 +65,7 @@
     <button class="fbtn" data-cat="その他" aria-pressed="true"><span class="dot" style="background:var(--c-sonota)"></span>その他(組合・独法等) <span class="cnt"></span></button>
     <select id="genreSel" aria-label="ジャンルで絞り込み"><option value="">全ジャンル</option></select>
     <span style="display:inline-flex;gap:4px;align-items:center;">
-      <input id="muniSearch" list="muniList" placeholder="自治体を検索(例: 豊島区)" aria-label="自治体を検索"
+      <input id="muniSearch" list="muniList" placeholder="自治体で絞り込み(例: 豊島区)" aria-label="自治体で絞り込み"
              style="border:1px solid var(--border);border-radius:8px;padding:6px 8px;font-size:13px;width:170px;">
       <datalist id="muniList"></datalist>
       <button id="muniGo" class="fbtn" style="padding:6px 10px;">表示</button>
@@ -124,7 +124,7 @@
     genreSel.appendChild(o);
   }
 
-  const state = { cats: new Set(Object.keys(CAT)), genre: "" };
+  const state = { cats: new Set(Object.keys(CAT)), genre: "", muni: "" };  // muni: 自治体検索で絞り込んだ区市町村名
 
   function esc(s) {
     return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -156,21 +156,25 @@
   function refresh() {
     cluster.clearLayers();
     const visible = [];
+    const counts = {};  // 区分別件数(自治体・ジャンルで絞った範囲。区分ボタンのON/OFFは件数に影響させない)
     for (const { f, m } of markers) {
-      if (!state.cats.has(f.c)) continue;
+      if (state.muni && f.m !== state.muni) continue;
       if (state.genre && genreOf(f) !== state.genre) continue;
+      counts[f.c] = (counts[f.c] || 0) + 1;
+      if (!state.cats.has(f.c)) continue;
       visible.push(m);
     }
     cluster.addLayers(visible);
-    document.getElementById("total").textContent = `表示中: ${visible.length.toLocaleString()}件`;
+    document.querySelectorAll(".fbtn[data-cat]").forEach(btn => {
+      btn.querySelector(".cnt").textContent = (counts[btn.dataset.cat] || 0).toLocaleString();
+    });
+    document.getElementById("total").textContent =
+      (state.muni ? `${state.muni}: ` : "") + `表示中: ${visible.length.toLocaleString()}件`;
   }
 
-  // 件数バッジ
-  const counts = {};
-  for (const f of FACILITIES) counts[f.c] = (counts[f.c] || 0) + 1;
+  // 区分ボタン(件数バッジは refresh() が更新)
   document.querySelectorAll(".fbtn[data-cat]").forEach(btn => {
     const cat = btn.dataset.cat;
-    btn.querySelector(".cnt").textContent = (counts[cat] || 0).toLocaleString();
     btn.addEventListener("click", () => {
       const on = btn.getAttribute("aria-pressed") === "true";
       btn.setAttribute("aria-pressed", String(!on));
@@ -192,6 +196,7 @@
   function clearBoundary() {
     if (boundaryLayer) { map.removeLayer(boundaryLayer); boundaryLayer = null; }
     document.getElementById("muniClear").classList.add("hidden");
+    if (state.muni) { state.muni = ""; refresh(); }
   }
   function showMuni(qRaw) {
     const q = (qRaw || "").trim().replace(/\s/g, "");
@@ -211,6 +216,8 @@
     map.fitBounds(boundaryLayer.getBounds(), { padding: [20, 20] });
     document.getElementById("muniSearch").value = name;
     document.getElementById("muniClear").classList.remove("hidden");
+    state.muni = name;  // 施設と件数バッジをこの自治体に絞る
+    refresh();
   }
   document.getElementById("muniGo").addEventListener("click", () => showMuni(document.getElementById("muniSearch").value));
   document.getElementById("muniSearch").addEventListener("keydown", e => {
