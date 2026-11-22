@@ -65,3 +65,12 @@
   FileZilla から WSL リポジトリ直接参照(\\wsl.localhost\Ubuntu\home\ynakamura\projects\my-website)に一本化。
 - 全ファイルがリポジトリ HEAD と一致していることを照合済み(assets・contact.php・note-feed.php 含む)。
 - deploy/make-release.sh は役目を終えたため削除(必要になれば git 履歴から復元可)。
+
+## 2026-11-23 都か区か国か 収録範囲拡張版(本番FTPアップ待ち)
+- 対象3ファイル(FileZilla で `\\wsl.localhost\Ubuntu\home\ynakamura\projects\my-website\tokakuka\` → 本番 `/tokakuka/` に上書き):
+  1. `tokakuka/map.html`(自治体絞り込み時の件数表示・出典/免責更新)
+  2. `tokakuka/quiz.html`(出典/免責更新)
+  3. `tokakuka/data/facilities.js`(10,388→11,009件。国48→383。約3.8MB)
+- `report.php` `report_admin.php` `report_key.php` `data/boundaries.js` `reports/` は変更なし(触らない)
+- アップ後の確認: map.html を Ctrl+F5 → 国 383 / 都道府県 857 / 市区町村 9,562 / その他 207。「豊島区」表示で 8/20/107/4、計139件。quiz.html で豊島区を選び10問が出ること
+- テスト環境(github.io)は commit 8c766f7 で反映済み(Action 成功)。レビュー: legal 条件付き可→是正済み、critical 🔴8件→是正・再レビュー承認(nakamura-ws thoughts/reviews/20261120_tokakuka_*)
